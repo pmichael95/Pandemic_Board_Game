@@ -1,6 +1,9 @@
 #pragma once
 
 #include "CommonLibrary.h"
+#include <algorithm>
+#include <ctime>
+#include <deque>
 
 /*
 * CARD CLASS
@@ -48,7 +51,8 @@ public:
 	deque<Card*> getDrawPile();
 	deque<Card*> getDiscardPile();
 
-	void shuffle();
+	int cardsInDeck();
+	void shuffleDeck();
 	void discardToDraw();
 	Card* drawFromTop();
 	Card* drawFromBottom();		//Infection Only

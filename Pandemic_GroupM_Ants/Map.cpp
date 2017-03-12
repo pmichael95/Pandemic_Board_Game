@@ -11,34 +11,6 @@ CityNode::CityNode(string name, InfectType area, bool researchStation) : name(na
 CityNode::~CityNode(){}
 
 
-//Get and Set//////////////////////////////////
-string CityNode::getName()
-{	return this->name;	}
-
-InfectType CityNode::getArea()
-{	return this->area;	}
-
-int CityNode::getInfectionLevel(InfectType infection)
-{	return this->infectionLevel[infection];	}
-
-void CityNode::increaseInfectionLevel(InfectType infection)
-{	this->infectionLevel[infection]++;	}
-
-bool CityNode::hasResearchStation()
-{	return this->researchStation;	}
-
-void CityNode::addResearchStation()
-{	this->researchStation = true;	}
-
-vector<CityNode*> CityNode::getConnections()
-{	return this->connections;	}
-
-void CityNode::addConnection(CityNode* city)
-{	this->connections.push_back(city);	}
-
-
-
-
 //GAME MAP Class Definitions/////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,9 +32,6 @@ GameMap::~GameMap()
 
 
 //Get and Set/////////////////////////////////////
-CityNode* GameMap::getHead()
-{	return this->head;	}
-
 CityNode* GameMap::getCity(string name)
 {
 	for (int i = 0; i < this->cityList.size(); i++) {

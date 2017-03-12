@@ -2,7 +2,7 @@
 
 //ENUMS////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-string enumToString(InfectType t) {
+string infectTypeEnumToString(InfectType t) {
 	switch (t) {
 	case 0:
 		return "Yellow";
@@ -14,5 +14,17 @@ string enumToString(InfectType t) {
 		return "Black";
 	default:
 		return "INVALID ENUM";
+	}
+}
+
+string cureStatusEnumToString(CureStatus c)
+{
+	switch (c) {
+	case notCured:
+		return "Not Cured";
+	case cured:
+		return "Cured";
+	case eradicated:
+		return "Eradicated";
 	}
 }

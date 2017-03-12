@@ -43,6 +43,7 @@ Deck::Deck(string fileName)
 	this->drawPile = deque<Card*>();
 	this->discardPile = deque<Card*>();
 	initialize(fileName);
+	shuffleDeck();
 }
 
 Deck::~Deck()
@@ -50,10 +51,12 @@ Deck::~Deck()
 	for (int i = 0; i < drawPile.size(); i++)
 	{
 		delete drawPile[i];
+		drawPile[i] = nullptr;
 	}
 	for (int j = 0; j < discardPile.size(); j++)
 	{
 		delete discardPile[j];
+		drawPile[j] = nullptr;
 	}
 }
 
@@ -127,7 +130,7 @@ void Deck::populatePlayer(ifstream& file)
 			}
 			else if (type == "Epidemic")
 			{
-				Card *epidemicCard = new EpidemicCard("Epidemic");
+				Card *epidemicCard = new EpidemicCard();
 				addCard(epidemicCard);
 			}
 
@@ -184,12 +187,17 @@ void Deck::populateRole(ifstream& file)
 		cout << "Invalid file configuration" << endl;
 }
 
+int Deck::cardsInDeck()
+{
+	return drawPile.size();
+}
+
 int random(int i)
 {
 	return rand() % i;
 }
 
-void Deck::shuffle()
+void Deck::shuffleDeck()
 {
 	srand(unsigned(time(0)));
 	random_shuffle(this->getDrawPile().begin(), this->getDrawPile().end(), random);
@@ -209,16 +217,26 @@ void Deck::discardToDraw()
 
 Card* Deck::drawFromTop()
 {
-	Card* toReturn = drawPile.back();
-	drawPile.pop_back();
-	return toReturn;
+	if (cardsInDeck() > 0)
+	{
+		Card* toReturn = drawPile.back();
+		drawPile.pop_back();
+		return toReturn;
+	}
+	//else
+		//lose
 }
 
 Card* Deck::drawFromBottom()
 {
-	Card* toReturn = drawPile.front();
-	drawPile.pop_front();
-	return toReturn;
+	if (cardsInDeck() > 0)
+	{
+		Card* toReturn = drawPile.front();
+		drawPile.pop_front();
+		return toReturn;
+	}
+	//else
+		//lose
 }
 
 void Deck::discard(Card* card)
@@ -269,7 +287,7 @@ string InfectionCard::getCity() const {
 
 // Getter for the color as a string
 string InfectionCard::getColorString() const {
-	return enumToString(this->color); // Call the helper enumToString to get a string for the color
+	return infectTypeEnumToString(this->color); // Call the helper enumToString to get a string for the color
 }
 
 // Getter for the color as InfectType
@@ -374,7 +392,7 @@ string CityCard::getCity() const {
 
 // Getter for the color as a string
 string CityCard::getColorString() const {
-	return enumToString(this->color);
+	return infectTypeEnumToString(this->color);
 }
 
 // Getter for the color as a InfectType
@@ -401,12 +419,7 @@ void CityCard::print() {
 
 // Default constructor
 EpidemicCard::EpidemicCard() {
-	this->desc = "";
-}
-
-// Constructor setting the description
-EpidemicCard::EpidemicCard(string desc) {
-	this->desc = desc;
+	this->desc = "Epidemic";
 }
 
 // Default destructor

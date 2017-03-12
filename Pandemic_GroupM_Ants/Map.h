@@ -20,18 +20,18 @@ public:
 	~CityNode();
 
 	//Get and Set////////////////////////////
-	string getName();
+	string getName() {	return this->name;	}
 	
-	InfectType getArea();
+	InfectType getArea() { return this->area; }
 
-	int getInfectionLevel(InfectType infection);
-	void increaseInfectionLevel(InfectType infection);
+	int getInfectionLevel(InfectType infection) { return this->infectionLevel[infection]; }
+	void increaseInfectionLevel(InfectType infection) { this->infectionLevel[infection]++; }
 	
-	bool hasResearchStation();
-	void addResearchStation();
+	bool hasResearchStation() { return this->researchStation; }
+	void addResearchStation() { this->researchStation = true; }
 	
-	vector<CityNode*> getConnections();
-	void addConnection(CityNode* city);
+	vector<CityNode*> getConnections() { return this->connections; }
+	void addConnection(CityNode* city) { this->connections.push_back(city); }
 };
 
 //GAME MAP CLASS///////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ public:
 	~GameMap();
 
 	//Get and Set////////////////////////////////////
-	CityNode* getHead();
+	CityNode* getHead() { return this->head; }
 
 	CityNode* getCity(string name);
 

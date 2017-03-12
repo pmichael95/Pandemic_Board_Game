@@ -11,7 +11,7 @@ class Markers
 	int diseaseCubes[NUM_OF_DISEASES];
 	int outbreakCounter;
 	const int* infectionRatePosition;
-	bool cureMarkers[NUM_OF_DISEASES];
+	CureStatus cureMarkers[NUM_OF_DISEASES];
 
 public:
 	//Constructors/////////////////////////////////////
@@ -19,20 +19,21 @@ public:
 	~Markers();
 
 	//Get and Set///////////////////////////////////////
-	int getNumOfResearchStations();
+	int getNumOfResearchStations() { return this->researchStations; }
 	bool useResearchStation();
 
-	int getNumOfDiseaseCubes(InfectType color);
+	int getNumOfDiseaseCubes(InfectType color) { return this->diseaseCubes[color]; }
 	bool useDiseaseCube(InfectType color);
 
-	int getOutbreakCounter();
-	void increaseOutbreakCounter();
+	int getOutbreakCounter() { return this->outbreakCounter; }
+	void increaseOutbreakCounter() { this->outbreakCounter++; }
 
-	int getInfectionRate();
-	void increaseInfectRate();
+	int getInfectionRate() { return *this->infectionRatePosition; }
+	void increaseInfectRate() { this->infectionRatePosition++; }
 
-	bool getCureMarker(InfectType infection);
-	void setCureMarkerToTrue(InfectType infection);
+	CureStatus getCureMarker(InfectType infection) { return this->cureMarkers[infection]; }
+	void cureDiseaseUpdateMarker(InfectType infection) { this->cureMarkers[infection] = cured; }
+	void eradicateDiseaseUpdateMarker(InfectType infection) { this->cureMarkers[infection] = eradicated; }
 
 };
 
