@@ -114,17 +114,21 @@
     <ClInclude Include="CommonLibrary.h" />
     <ClInclude Include="GameController.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="MapView.h" />
     <ClInclude Include="Markers.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerView.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cards.cpp" />
     <ClCompile Include="CommonLibrary.cpp" />
     <ClCompile Include="GameController.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="MapView.cpp" />
     <ClCompile Include="Markers.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Driver.cpp" />
+    <ClCompile Include="PlayerView.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -17,13 +17,13 @@ C 1 Manila
 C 1 Sydney
 C 0 Santiago
 C 0 Lagos
-C 0 BuenosAires
+C 0 Buenos Aires
 C 2 Paris
 C 2 Essen
 C 3 Algiers
 C 1 Seoul
 C 1 Osaka
-C 1 Tripei
+C 1 Taipei
 C 1 Ho Chi Minh City
 C 1 Hong Kong
 C 1 Jakarta

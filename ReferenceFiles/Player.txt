@@ -46,14 +46,8 @@ City 3 Delhi
 City 3 Mumbai
 City 3 Tehran
 City 3 Karachi
-Event Airlift
-Event One Quiet Night
-Event Forecast
-Event Government Grant
-Event Resilient Population
-Epidemic
-Epidemic
-Epidemic
-Epidemic
-Epidemic
-Epidemic
+Event Airlift Move a pawn (yours or another player's) to any city. You must have a players permission to the move their pawn.
+Event One Quiet Night Skip the next Infect Cities step. (Do not flip over any Infection Cards.)
+Event Forecast Examine the top 6 cards of the Infection Draw Pile. rearrange them in the order of your choice. then place them back on the pile.
+Event Government Add a research station to any city for free.
+Event Resilient Population Remove any 1 card in the Infection Discard Pile from the game. You may play this between the Infect and Intesify steps of an epidemic.

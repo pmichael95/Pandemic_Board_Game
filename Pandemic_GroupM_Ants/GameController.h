@@ -5,6 +5,8 @@
 #include "Markers.h"
 #include "Cards.h"
 #include "Player.h"
+#include "MapView.h"
+#include "PlayerView.h"
 
 class GameController
 {
@@ -17,7 +19,9 @@ class GameController
 	Deck* playerDeck;
 	Player* players[NUM_OF_PLAYERS];
 
-	//Views???
+	//Views
+	MapView    mapDisplay;
+	PlayerView playerDisplay;
 
 public:
 	GameController();
@@ -37,6 +41,7 @@ private:
 
 
 	void switchPlayers();
+	void pause();
 
 	//PHASE 1 ACTIONS//////////////////////////////////////////////
 	void phase1_Actions();
@@ -45,6 +50,7 @@ private:
 	void phase2_DrawCards();
 	void drawPlayerCard();
 	void epidemicCardActions();
+	void discardPlayerCard();
 
 	//PHASE 3 INFECTION ////////////////////////////////////////////
 	void phase3_Infects();

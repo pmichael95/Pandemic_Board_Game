@@ -60,12 +60,12 @@ Deck::~Deck()
 	}
 }
 
-deque<Card*> Deck::getDrawPile()
+deque<Card*> &Deck::getDrawPile()
 {
 	return this->drawPile;
 }
 
-deque<Card*> Deck::getDiscardPile()
+deque<Card*> &Deck::getDiscardPile()
 {
 	return this->discardPile;
 }
@@ -75,23 +75,23 @@ void Deck::initialize(string fileName)
 	ifstream file;
 	file.open(fileName);
 
-	if (fileName == "Infection.txt")
+	if (fileName == INFECTION_CARD_INITIAL_FILE)
 	{
-		cout << "Populating Infection Deck...";
+		cout << "Populating Infection Deck..." << endl;
 		populateInfect(file);
-		cout << "Populating Infection Deck Complete.";
+		cout << "Populating Infection Deck Complete." << endl;
 	}
-	else if (fileName == "Player.txt")
+	else if (fileName == PLAYER_CARD_INITIAL_FILE)
 	{
-		cout << "Populating Player Deck...";
+		cout << "Populating Player Deck..." << endl;
 		populatePlayer(file);
-		cout << "Populating Player Deck Complete.";
+		cout << "Populating Player Deck Complete." << endl;
 	}
-	else if (fileName == "Role.txt")
+	else if (fileName == ROLE_CARD_INITIAL_FILE)
 	{
-		cout << "Populating Role Deck...";
+		cout << "Populating Role Deck..." << endl;
 		populateRole(file);
-		cout << "Populating Role Deck Complete.";
+		cout << "Populating Role Deck Complete." << endl;
 	}
 	else
 	{
@@ -118,23 +118,18 @@ void Deck::populatePlayer(ifstream& file)
 				getline(file, city);
 				Card *cityCard = new CityCard(city, (InfectType)color);
 				addCard(cityCard);
+				cout << "Added Player City Card " << city << endl;
 			}
 			else if (type == "Event")
 			{
 				string name;
 				string description;
 				file >> name >> ws;
-				//getline(file, description);
-				Card *eventCard = new EventCard(name, "");
+				getline(file, description);
+				Card *eventCard = new EventCard(name, description);
 				addCard(eventCard);
+				cout << "Added Player Event Card " << name << endl;
 			}
-			else if (type == "Epidemic")
-			{
-				Card *epidemicCard = new EpidemicCard();
-				addCard(epidemicCard);
-			}
-
-			cout << "ADDED CARD " << endl;
 		}
 	}
 	else
@@ -156,7 +151,7 @@ void Deck::populateInfect(ifstream& file)
 
 			addCard(infectionCard);
 
-			cout << "ADDED CARD " << city << endl;
+			cout << "Added Infection Card " << city << endl;
 		}
 	}
 	else
@@ -180,7 +175,7 @@ void Deck::populateRole(ifstream& file)
 
 			addCard(roleCard);
 
-			cout << "ADDED CARD " << endl;
+			cout << "Added Role Card " << title << endl;
 		}
 	}
 	else
@@ -255,16 +250,14 @@ void Deck::addCard(Card* card)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Default constructor
-InfectionCard::InfectionCard() {
+InfectionCard::InfectionCard() : Card("Infection") {
 	this->city = "";
-	this->setType("infection");
 }
 
 // Constructor that sets all variables
-InfectionCard::InfectionCard(string city, InfectType color) {
+InfectionCard::InfectionCard(string city, InfectType color) : Card("Infection"){
 	this->city = city;
 	this->color = color;
-	this->setType("infection");
 }
 
 // Default destructor
@@ -296,10 +289,16 @@ InfectType InfectionCard::getColor() const {
 }
 
 // Print implementation from Card
-void InfectionCard::print() {
-	cout << "== Printing out a " << this->getType() << " card. ==" << endl;
-	cout << "City: " << this->getCity() << endl;
-	cout << "Color: " << this->getColorString() << endl;
+string InfectionCard::print() {
+	string infectionPrint = (this->getType() + " card: " + this->getCity() + "(" + this->getColorString() + ")");
+
+	//infectionPrint.append("== Printing out a " + this->getType() + " card. ==");
+	//infectionPrint.append("City: " + this->getCity() );
+	//infectionPrint.append("Color: " + this->getColorString() );
+
+	return infectionPrint;
+
+	// return (this->getType() + " card: " + this->getCity() + "(" + this->getColorString + ")");
 }
 
 
@@ -311,13 +310,13 @@ void InfectionCard::print() {
 ***********************/
 
 // Default Event card constructor
-EventCard::EventCard() {
+EventCard::EventCard() : Card("Event") {
 	this->name = "";
 	this->desc = "";
 }
 
 // Constructor that sets all members
-EventCard::EventCard(string name, string desc) {
+EventCard::EventCard(string name, string desc) : Card("Event"){
 	this->name = name;
 	this->desc = desc;
 }
@@ -346,10 +345,14 @@ string EventCard::getDesc() const {
 }
 
 // Print method from Card for Event cards
-void EventCard::print() {
-	cout << "== Printing out a " << this->getType() << " card. ==" << endl;
-	cout << "Name: " << this->getName() << endl;
-	cout << "Description: " << this->getDesc() << endl;
+string EventCard::print() {
+	string eventPrint = this->getType() + " card: " + this->getName() + " (Description: " + this->getDesc() + ")";;
+
+	/*eventPrint.append("== Printing out a " + this->getType() + " card. ==");
+	eventPrint.append("Name: " + this->getName() );
+	eventPrint.append("Description: " + this->getDesc() );*/
+
+	return eventPrint;
 }
 
 /***********************/
@@ -362,12 +365,12 @@ void EventCard::print() {
 ***********************/
 
 // Default City card constructor
-CityCard::CityCard() {
+CityCard::CityCard() : Card("City") {
 	this->city = "";
 }
 
 // Constructor that sets all members
-CityCard::CityCard(string city, InfectType color) {
+CityCard::CityCard(string city, InfectType color) : Card("City") {
 	this->city = city;
 	this->color = color;
 }
@@ -401,10 +404,14 @@ InfectType CityCard::getColor() const {
 }
 
 // Print method from Card for City cards
-void CityCard::print() {
-	cout << "== Printing out a " << this->getType() << " card. ==" << endl;
+string CityCard::print() {
+
+	string cityPrint = this->getType() + " card: " + this->getCity() + "(" + this->getColorString() + ")";
+	/*cout << "== Printing out a " << this->getType() << " card. ==" << endl;
 	cout << "City: " << this->getCity() << endl;
-	cout << "Color: " << this->getColorString() << endl;
+	cout << "Color: " << this->getColorString() << endl;*/
+
+	return cityPrint;
 }
 
 /***********************/
@@ -418,8 +425,10 @@ void CityCard::print() {
 ***********************/
 
 // Default constructor
-EpidemicCard::EpidemicCard() {
-	this->desc = "Epidemic";
+EpidemicCard::EpidemicCard() : Card("Epidemic") {
+	this->desc = "1. INCREASE \nMove the Infection Rate Indicator up by 1.\n\n"
+		"2. INFECT \nDraw a card off the bottom of the Infection Draw Pile and infect the indicated city with 3 cubes.\nDiscard the card.\n\n"
+		"3. INTENSIFY \nShuffle the Infection Discard Pile and place it on top of the Infection Draw Pile.";
 }
 
 // Default destructor
@@ -436,9 +445,17 @@ string EpidemicCard::getDesc() const {
 }
 
 // Print method from Card for Epidemic cards
-void EpidemicCard::print() {
-	cout << "== Printing out a " << this->getType() << " card. ==" << endl;
-	cout << "Description: " << this->getDesc() << endl;
+string EpidemicCard::print() {
+
+	string epidemicPrint = (this->getType() + " card");
+	/*cout << "== Printing out a " << this->getType() << " card. ==" << endl;
+	cout << "Description: " << this->getDesc() << endl;*/
+
+	return epidemicPrint;
+}
+
+string EpidemicCard::printDescription() {
+	return ("Description: \n" + this->getDesc());
 }
 
 /***********************/
@@ -451,19 +468,17 @@ void EpidemicCard::print() {
 */
 
 // Default constructor
-RoleCard::RoleCard() {
+RoleCard::RoleCard() : Card("Role") {
 	this->name = "";
 	this->color = "";
 	this->desc = "";
-	this->setType("role");
 }
 
 // Constructor that populates all variables
-RoleCard::RoleCard(string name, string color, string desc) {
+RoleCard::RoleCard(string name, string color, string desc) : Card("Role") {
 	this->name = name;
 	this->color = color;
 	this->desc = desc;
-	this->setType("role");
 }
 
 // Default destructor
@@ -500,11 +515,15 @@ void RoleCard::setDesc(string desc) {
 }
 
 // Implementation for print (for the role)
-void RoleCard::print() {
-	cout << "== Printing out a " << this->getType() << " card. ==" << endl;
+string RoleCard::print() {
+
+	string rolePrint = (this->getType() + ": " + this->getName() + "\n" + "      - Description: " + this->getDesc());
+	/*cout << "== Printing out a " << this->getType() << " card. ==" << endl;
 	cout << "Name: " << this->getName() << endl;
 	cout << "Color: " << this->getColor() << endl;
-	cout << "Description: " << this->getDesc() << endl;
+	cout << "Description: " << this->getDesc() << endl;*/
+
+	return rolePrint;
 }
 
 
@@ -514,7 +533,7 @@ void RoleCard::print() {
 */
 
 // Default constructor that initializes the reference card
-ReferenceCard::ReferenceCard() {
+ReferenceCard::ReferenceCard() : Card("Reference") {
 	this->reference = "\n== BASIC ACTIONS ==\n"
 		"\n* Drive (or Ferry)"
 		"\nMove your pawn to an adjacent City.\n"
@@ -533,8 +552,6 @@ ReferenceCard::ReferenceCard() {
 		"\nRemove a disease cube from the City your pawn occupies. If the cure has been found, remove ALL cubes of that color from the City.\n"
 		"\n* Share Knowledge"
 		"\nPass a card from one Player to another.\nBother Players' pawns must be in the City pictured on the card that is passed.\n";
-
-	this->setType("reference");
 }
 
 // Default destructor
@@ -546,7 +563,9 @@ string ReferenceCard::getReferenceCard() const {
 }
 
 // Print implementation to output the reference card
-void ReferenceCard::print() {
-	cout << "== Printing out a " << this->getType() << " card. ==" << endl;
-	cout << this->getReferenceCard() << endl;
+string ReferenceCard::print() {
+
+	string referencePrint = (this->getType() + " card: " + this->getReferenceCard());
+	/*cout << "== Printing out a " << this->getType() << " card. ==" << endl; */
+	return referencePrint;
 }

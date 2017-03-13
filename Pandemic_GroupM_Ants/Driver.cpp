@@ -1,6 +1,10 @@
 #include "CommonLibrary.h"
 #include "GameController.h"
 
+#include "MapView.h"
+#include "PlayerView.h"
+#include "Cards.h"
+
 int main()
 {
 	GameController game;
@@ -25,6 +29,7 @@ int main()
 		game.startRound();
 		//save game: game.saveGame();
 		//Request: continue or quit?
+		system("cls");
 		cout << "The last game round has been saved, would you like to:" << endl;
 		cout << "1) Continue" << endl;
 		cout << "2) Quit" << endl;

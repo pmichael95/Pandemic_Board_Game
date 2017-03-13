@@ -42,6 +42,11 @@ CityNode* GameMap::getCity(string name)
 }
 
 
+vector<CityNode*> * GameMap::getCityList() {
+	return &cityList;
+}
+
+
 //Helper Functions//////////////////////////////////////////////////////
 void GameMap::loadStartingMap(string filename)
 {

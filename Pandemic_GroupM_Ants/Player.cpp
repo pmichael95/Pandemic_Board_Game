@@ -16,34 +16,7 @@ Player::~Player()
 	}
 }
 
-
-//Get and Set Functions/////////////////////////////////////
-void Player::setPawn(CityNode * position)
-{	this->pawn = position;	}
-
-CityNode * Player::getPawn()
-{	return this->pawn;	}
-
-RoleCard * Player::getRole()
-{	return this->role;	}
-
-void Player::setRole(RoleCard* roleCard)
-{	this->role = roleCard;	}
-
-ReferenceCard * Player::getReferenceCard()
-{	return this->reference;	}
-
-
-//Card Functions/////////////////////////////////////////////
-int Player::getNumOfCards()
-{	return this->cardsInHand.size();	}
-
-Card * Player::getCard(int index)
-{	return this->cardsInHand[index];	}
-
-void Player::addCard(Card* card)
-{	this->cardsInHand.push_back(card);	}
-
+//Card Functions////////////////////////////////////////////
 Card* Player::removeCard(int index)
 {
 	if (index < cardsInHand.size() && index > -1) {
@@ -53,4 +26,15 @@ Card* Player::removeCard(int index)
 	}
 	else
 		return nullptr;
+}
+
+string Player::printHand() {
+	string hand = "Hand: \n";
+
+	for (int i = 0; i < cardsInHand.size(); i++) {
+		hand.append("      - " + cardsInHand.at(i)->print() + "\n");
+	}
+
+	return hand;
+
 }

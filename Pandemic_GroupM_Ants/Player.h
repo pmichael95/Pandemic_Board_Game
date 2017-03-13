@@ -12,7 +12,7 @@ class Player
 	int id;
 	CityNode* pawn;
 	vector<Card*> cardsInHand;
-	ReferenceCard* reference; // or string* referenceCard ??
+	ReferenceCard* reference;
 	RoleCard* role;
 
 public:
@@ -22,17 +22,20 @@ public:
 	~Player();
 
 	//Get and Set/////////////////////////////////
-	void setPawn(CityNode* position);
-	CityNode* getPawn();
+	void setPawn(CityNode* position) { this->pawn = position; }
+	CityNode* getPawn() { return this->pawn; }
 
-	RoleCard* getRole();
-	void setRole(RoleCard* role);
-	ReferenceCard* getReferenceCard();
+	int getId() { return id; }
+
+	RoleCard* getRole() { return this->role; }
+	void setRole(RoleCard* role) { this->role = role; }
+	ReferenceCard* getReferenceCard() { return this->reference; }
 
 	//Card Methods///////////////////////////////
-	int getNumOfCards();
-	Card* getCard(int index);
-	void addCard(Card*);
+	int getNumOfCards() { return this->cardsInHand.size(); }
+	Card* getCard(int index) { return this->cardsInHand[index]; }
+	void addCard(Card* card) { this->cardsInHand.push_back(card); }
 	Card* removeCard(int index);
+	string printHand();
 };
 

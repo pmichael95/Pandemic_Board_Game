@@ -53,6 +53,8 @@ public:
 
 	CityNode* getCity(string name);
 
+	vector<CityNode*> * getCityList();
+
 private:
 	//Helper Functions///////////////////////////////
 	void loadStartingMap(string filename);

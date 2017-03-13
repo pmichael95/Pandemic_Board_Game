@@ -18,9 +18,9 @@ public:
 	Card(); // Default constructor
 	Card(string type); // Constructor that takes in a Type
 	virtual ~Card(); // Default destructor (virtual)
-	virtual void print() = 0; // Virtual function that will be used to print out the Card object in its derived classes
 	void setType(string type); // Sets the type of the Card
 	string getType() const; // Returns the type of the Card object
+	virtual string print() = 0; // Virtual function that will be used to print out the Card object in its derived classes
 };
 
 
@@ -48,8 +48,8 @@ public:
 	Deck(string fileName);
 	~Deck();
 
-	deque<Card*> getDrawPile();
-	deque<Card*> getDiscardPile();
+	deque<Card*> &getDrawPile();
+	deque<Card*> &getDiscardPile();
 
 	int cardsInDeck();
 	void shuffleDeck();
@@ -80,7 +80,7 @@ public:
 	string getCity() const; // Getter for the city
 	string getColorString() const; // Getter for the color as a string
 	InfectType getColor() const; // Returns an InfectType for the color
-	void print(); // Print method implementation from Card
+	string print(); // Print method implementation from Card
 };
 
 
@@ -98,7 +98,7 @@ public:
 	void setDesc(string desc); // Setter for the description
 	string getName() const; // Getter for the Event name
 	string getDesc() const; // Getter for the Event description
-	void print(); // Implementation for print from Card
+	string print(); // Implementation for print from Card
 };
 
 
@@ -118,7 +118,7 @@ public:
 	string getCity() const; // Getter for the city
 	string getColorString() const; // Getter for the color as a string
 	InfectType getColor() const; // Getter for the color as an InfectType
-	void print(); // Implementation for print from Card
+	string print(); // Implementation for print from Card
 };
 
 
@@ -134,7 +134,8 @@ public:
 	~EpidemicCard(); // Default destructor
 	void setDesc(string desc); // Setter for the description
 	string getDesc() const; // Getter for the description
-	void print(); // Implementation of print from Card
+	string print(); // Implementation of print from Card
+	string printDescription(); // Prints the description of the epidemic card
 };
 
 
@@ -160,7 +161,7 @@ public:
 	void setName(string name); // Sets the role name
 	void setColor(string color); // Sets the role color
 	void setDesc(string desc); // Sets the role description
-	void print(); // Prints out the card (inherited)
+	string print(); // Prints out the card (inherited)
 };
 
 
@@ -179,5 +180,5 @@ public:
 	~ReferenceCard(); // Default destructor
 				  // NOTE: Do not need any other constructor since the reference card is always the same.
 	string getReferenceCard() const; // Return the reference card
-	void print(); // Print implementation (from Card)
+	string print(); // Print implementation (from Card)
 };

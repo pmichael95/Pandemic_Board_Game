@@ -33,10 +33,10 @@ const int NUM_OF_PLAYER_CARDS_DRAWN_PER_TURN = 2;
 //GAME FILES/////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-const string MAP_INITIAL_FILE = "..";
-const string INFECTION_CARD_INITIAL_FILE = "..";
-const string PLAYER_CARD_INITIAL_FILE = "..";
-const string ROLE_CARD_INITIAL_FILE = "..";
+const string MAP_INITIAL_FILE = "../ReferenceFiles/InitialMap.txt";
+const string INFECTION_CARD_INITIAL_FILE = "../ReferenceFiles/Infection.txt";
+const string PLAYER_CARD_INITIAL_FILE = "../ReferenceFiles/Player.txt";
+const string ROLE_CARD_INITIAL_FILE = "../ReferenceFiles/Role.txt";
 
 //ENUMS///////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
