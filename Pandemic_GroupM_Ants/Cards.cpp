@@ -77,21 +77,19 @@ void Deck::initialize(string fileName)
 
 	if (fileName == INFECTION_CARD_INITIAL_FILE)
 	{
-		cout << "Populating Infection Deck..." << endl;
+		cout << "Pulling the Infection Deck out of the box..." << endl;
 		populateInfect(file);
-		cout << "Populating Infection Deck Complete." << endl;
 	}
 	else if (fileName == PLAYER_CARD_INITIAL_FILE)
 	{
-		cout << "Populating Player Deck..." << endl;
+		cout << "Pulling the Populating Player Deck out of the box..." << endl;
 		populatePlayer(file);
-		cout << "Populating Player Deck Complete." << endl;
+
 	}
 	else if (fileName == ROLE_CARD_INITIAL_FILE)
 	{
-		cout << "Populating Role Deck..." << endl;
+		cout << "Pulling the Role Deck out of the box..." << endl;
 		populateRole(file);
-		cout << "Populating Role Deck Complete." << endl;
 	}
 	else
 	{
@@ -118,7 +116,6 @@ void Deck::populatePlayer(ifstream& file)
 				getline(file, city);
 				Card *cityCard = new CityCard(city, (InfectType)color);
 				addCard(cityCard);
-				cout << "Added Player City Card " << city << endl;
 			}
 			else if (type == "Event")
 			{
@@ -128,7 +125,6 @@ void Deck::populatePlayer(ifstream& file)
 				getline(file, description);
 				Card *eventCard = new EventCard(name, description);
 				addCard(eventCard);
-				cout << "Added Player Event Card " << name << endl;
 			}
 		}
 	}
@@ -151,7 +147,6 @@ void Deck::populateInfect(ifstream& file)
 
 			addCard(infectionCard);
 
-			cout << "Added Infection Card " << city << endl;
 		}
 	}
 	else
@@ -175,7 +170,6 @@ void Deck::populateRole(ifstream& file)
 
 			addCard(roleCard);
 
-			cout << "Added Role Card " << title << endl;
 		}
 	}
 	else
@@ -292,13 +286,7 @@ InfectType InfectionCard::getColor() const {
 string InfectionCard::print() {
 	string infectionPrint = (this->getType() + " card: " + this->getCity() + "(" + this->getColorString() + ")");
 
-	//infectionPrint.append("== Printing out a " + this->getType() + " card. ==");
-	//infectionPrint.append("City: " + this->getCity() );
-	//infectionPrint.append("Color: " + this->getColorString() );
-
 	return infectionPrint;
-
-	// return (this->getType() + " card: " + this->getCity() + "(" + this->getColorString + ")");
 }
 
 
@@ -346,11 +334,7 @@ string EventCard::getDesc() const {
 
 // Print method from Card for Event cards
 string EventCard::print() {
-	string eventPrint = this->getType() + " card: " + this->getName() + " (Description: " + this->getDesc() + ")";;
-
-	/*eventPrint.append("== Printing out a " + this->getType() + " card. ==");
-	eventPrint.append("Name: " + this->getName() );
-	eventPrint.append("Description: " + this->getDesc() );*/
+	string eventPrint = this->getType() + " card: " + this->getName() + " (Description: " + this->getDesc() + ")";
 
 	return eventPrint;
 }
@@ -407,9 +391,6 @@ InfectType CityCard::getColor() const {
 string CityCard::print() {
 
 	string cityPrint = this->getType() + " card: " + this->getCity() + "(" + this->getColorString() + ")";
-	/*cout << "== Printing out a " << this->getType() << " card. ==" << endl;
-	cout << "City: " << this->getCity() << endl;
-	cout << "Color: " << this->getColorString() << endl;*/
 
 	return cityPrint;
 }
@@ -448,8 +429,6 @@ string EpidemicCard::getDesc() const {
 string EpidemicCard::print() {
 
 	string epidemicPrint = (this->getType() + " card");
-	/*cout << "== Printing out a " << this->getType() << " card. ==" << endl;
-	cout << "Description: " << this->getDesc() << endl;*/
 
 	return epidemicPrint;
 }
@@ -518,10 +497,6 @@ void RoleCard::setDesc(string desc) {
 string RoleCard::print() {
 
 	string rolePrint = (this->getType() + ": " + this->getName() + "\n" + "      - Description: " + this->getDesc());
-	/*cout << "== Printing out a " << this->getType() << " card. ==" << endl;
-	cout << "Name: " << this->getName() << endl;
-	cout << "Color: " << this->getColor() << endl;
-	cout << "Description: " << this->getDesc() << endl;*/
 
 	return rolePrint;
 }
@@ -566,6 +541,5 @@ string ReferenceCard::getReferenceCard() const {
 string ReferenceCard::print() {
 
 	string referencePrint = (this->getType() + " card: " + this->getReferenceCard());
-	/*cout << "== Printing out a " << this->getType() << " card. ==" << endl; */
 	return referencePrint;
 }

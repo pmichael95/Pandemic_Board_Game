@@ -12,13 +12,16 @@ using namespace std;
 class PlayerView {
 
 	public: 
+		// Constructor
 		PlayerView();
+
+		// Destructor
 		~PlayerView();
 
-		void printPlayerDisplay(Player* player) const;
-		void clearPlayerDisplay();
+		// ========== Playerview Functions =============
+		void printPlayerDisplay(Player* player) const; // Prints the player view
+		void clearPlayerDisplay();  // Clears the player view
 
-	private:
 };
 
 #endif

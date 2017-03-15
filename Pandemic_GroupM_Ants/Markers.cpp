@@ -5,7 +5,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Constructors///////////////////////////////////////////
-Markers::Markers() : researchStations(NUM_OF_RESEARCH_STATIONS), outbreakCounter(0), infectionRatePosition(&INFECTION_RATE[0])
+Markers::Markers() : researchStations(NUM_OF_RESEARCH_STATIONS), outbreakCounter(0), infectionRatePosition(0)
 {
 	std::fill_n(this->diseaseCubes, NUM_OF_DISEASES, NUM_OF_DISEASE_CUBES_PER_TYPE);
 	std::fill_n(this->cureMarkers, NUM_OF_DISEASES, notCured);

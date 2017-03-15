@@ -5,6 +5,10 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/deque.hpp>
 
 using namespace std;
 
@@ -29,6 +33,7 @@ const int NUM_OF_RESEARCH_STATIONS = 6;
 
 const int NUM_OF_EPIDEMIC_CARDS = 6;
 const int NUM_OF_PLAYER_CARDS_DRAWN_PER_TURN = 2;
+const int NUM_OF_CARDS_TO_CURE = 5;
 
 //GAME FILES/////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -37,6 +42,7 @@ const string MAP_INITIAL_FILE = "../ReferenceFiles/InitialMap.txt";
 const string INFECTION_CARD_INITIAL_FILE = "../ReferenceFiles/Infection.txt";
 const string PLAYER_CARD_INITIAL_FILE = "../ReferenceFiles/Player.txt";
 const string ROLE_CARD_INITIAL_FILE = "../ReferenceFiles/Role.txt";
+const string SAVED_MAP_FILE = "../ReferenceFiles/SavedGame.txt";
 
 //ENUMS///////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////

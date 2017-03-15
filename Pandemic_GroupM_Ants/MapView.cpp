@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 // Constructor
 MapView::MapView() {
 	
@@ -12,11 +13,15 @@ MapView::MapView() {
 // Destructor
 MapView::~MapView() { }
 
-void MapView::printMap() {
+// ============ Print Map Function ====================
+void MapView::printMap(Markers* marker) {
 
 	cout << "\n ======================================================================================================================================================================================================================= " << endl;
-	cout << "                                                                                                          PANDEMIC MAP                                                                                          " << endl;
+	cout << "                                                                                                          PANDEMIC MAP " << endl;
+	cout << "                                                                                                      ---------------------              " << endl;
+	cout << "                                                                                          Legend: Infection Cubes [Yellow, Red, Blue, Black]  " << endl;
 	cout << "                                                                                                         ============== \n" << endl;
+	// Printing Map
 	cout << "                                                                        London          Essen       St. Pertersberg                    Moscow                                           Beijing         Seoul        " << endl;
 	cout << "                                                           --------- " << cityInfection[12] << " -- " << cityInfection[21] << " -- " << cityInfection[32] << " ----------------- " << cityInfection[41] << "                                     " << cityInfection[35] << " -- " << cityInfection[23] <<  endl;
 	cout << "                                                          |                       \\               \\                       |               |                                                       /                 " << endl;
@@ -27,7 +32,7 @@ void MapView::printMap() {
 	cout << "    /               /            \\              \\                                 \\       |                      \\        |               |                                                  \\                       " << endl;
 	cout << "   /      |       /        |       \\              \\       |                |       \\      |                       \\       |               |                                               |   \\           |               " << endl;
 	cout << "  /       |     /          |         \\              \\     |                |        \\     |                        \\      |               |                                               |    \\          |             " << endl;
-	cout << "     Los Angelos           |            Atlanta       Washington           |            Algiers                        Istanbul         Tehran                                            |     \\       Osaka        " << endl;
+	cout << "     Los Angeles           |            Atlanta       Washington           |            Algiers                        Istanbul         Tehran                                            |     \\       Osaka        " << endl;
 	cout << "     " << cityInfection[9] << "          |         " << cityInfection[0] << " -- " << cityInfection[2] << "          |         " << cityInfection[22] << " -----------------  " << cityInfection[34] << "    " << cityInfection[46] << " --------                                |      \\   " << cityInfection[24] << endl;
 	cout << "    /                      |                    \\                          |                                      /                /                      |                               |       \\                  " << endl;
 	cout << "   /      |                |                      \\       |                |              |                     /         |      /        |               |                               |        \\      |            " << endl;
@@ -42,18 +47,40 @@ void MapView::printMap() {
 	cout << "                                                                                                    /                                                                              /                                  " << endl;
 	cout << "                           |                              |                |               |      /       |                                                |               |      /                       |         /     " << endl;
 	cout << "                           |                              |                |               |    /         |                                                |               |     /                        |        /   " << endl;
-	cout << "                       Santiago                      Buenos Aires          |           Kinshasa      Johannesburg                                          |            Jikarta                         Sydney    /        " << endl;
+	cout << "                       Santiago                      Buenos Aires          |           Kinshasa      Johannesburg                                          |            Jakarta                         Sydney    /        " << endl;
 	cout << "                     " << cityInfection[17] << "                    " << cityInfection[19] << " ---------          " << cityInfection[30] << " -- " << cityInfection[40] << "                                          --------- " << cityInfection[28] << " ------------------ " << cityInfection[16] << endl;
-	cout << "\n\n ======================================================================================================================================================================================================================= \n\n" << endl;
+	cout << endl;
 
+	// Printing Marker Status
+	cout << "\n             ------------------------------------------------------------------------------------------------ MARKERS -----------------------------------------------------------------------------  " << endl;
+	cout << "                                                 Disease Status    Yellow Disease: " << cureStatusEnumToString(marker->getCureMarker((InfectType)0)) << "  |    Cubes Left    Yellow: " << fillNumber(marker->getNumOfDiseaseCubes((InfectType) 0)) << "  |            Infection Outbreak: " << marker->getOutbreakCounter() << endl;
+	cout << "                                                ----------------      Red Disease: " << cureStatusEnumToString(marker->getCureMarker((InfectType)1)) << "  |   ------------      Red: " << fillNumber(marker->getNumOfDiseaseCubes((InfectType) 1)) << "  |               Infecttion Rate: " << marker->getInfectionRate() << endl;
+	cout << "                                                                     Blue Disease: " << cureStatusEnumToString(marker->getCureMarker((InfectType)2)) << "  |                    Blue: " << fillNumber(marker->getNumOfDiseaseCubes((InfectType) 2)) << "  |    Research Station Remaining: " << marker->getNumOfResearchStations() <<endl;
+	cout << "                                                                    Black Disease: " << cureStatusEnumToString(marker->getCureMarker((InfectType)3)) << "  |                   Black: " << fillNumber(marker->getNumOfDiseaseCubes((InfectType) 3)) << "  |    Research Station Locations: " << researchStationCities <<  endl;
+	cout << " ======================================================================================================================================================================================================================= \n\n" << endl;
+
+}
+
+
+// Fills in the number for printing consistency
+string MapView::fillNumber(int number) {
+	if (number < 10)
+		return " " + to_string(number) ;
+	else
+		return to_string(number);
 }
 
 // Update map for the Infection Rate on each city
 void MapView::updateMap(const vector<CityNode *> * cityList) {
 
 	string temp;
+	researchStationCities = "";
 	
-	for (int i = 0; i < cityList->size(); i++) {		
+	// Creates a string to contain number of cubes [0,0,0,0]
+	for (int i = 0; i < cityList->size(); i++) {
+
+		if (cityList->at(i)->hasResearchStation())
+			researchStationCities.append(cityList->at(i)->getName() + ", ");
 
 		for (int j = 0; j < NUM_OF_DISEASES; j++) {
 
@@ -67,15 +94,12 @@ void MapView::updateMap(const vector<CityNode *> * cityList) {
 			else
 				temp.append("]");
 		}
-
-		cout << endl;
 		cityInfection[i] = temp;
 		temp = "";
-
 	}
 }
 
 // Clear Console Screen Function
 void MapView::clearScreen() {
-	system("CLS");
+	system("cls");
 }

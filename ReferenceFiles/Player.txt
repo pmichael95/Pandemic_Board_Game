@@ -17,13 +17,13 @@ City 1 Manila
 City 1 Sydney
 City 0 Santiago
 City 0 Lagos
-City 0 BuenosAires
+City 0 Buenos Aires
 City 2 Paris
 City 2 Essen
 City 3 Algiers
 City 1 Seoul
 City 1 Osaka
-City 1 Tripei
+City 1 Taipei
 City 1 Ho Chi Minh City
 City 1 Hong Kong
 City 1 Jakarta

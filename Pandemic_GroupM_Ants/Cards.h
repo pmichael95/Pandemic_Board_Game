@@ -14,13 +14,20 @@
 class Card {
 private:
 	string type; // The type of card - Role, Reference, Infection, or Player
+
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar & type;
+	}
+
 public:
 	Card(); // Default constructor
 	Card(string type); // Constructor that takes in a Type
 	virtual ~Card(); // Default destructor (virtual)
 	void setType(string type); // Sets the type of the Card
 	string getType() const; // Returns the type of the Card object
-	virtual string print() = 0; // Virtual function that will be used to print out the Card object in its derived classes
+	virtual string print() { return  ""; } // Virtual function that will be used to print out the Card object in its derived classes
 };
 
 
@@ -42,6 +49,18 @@ private:
 	void populatePlayer(ifstream& file);
 	void populateInfect(ifstream& file);
 	void populateRole(ifstream& file);
+
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar.template register_type<Card>();
+		ar.template register_type<InfectionCard>();
+		ar.template register_type<CityCard>();
+		ar.template register_type<EventCard>();
+		ar.template register_type<EpidemicCard>();
+		ar.template register_type<RoleCard>();
+		ar & drawPile & discardPile;
+	}
 
 public:
 	Deck();
@@ -71,6 +90,13 @@ class InfectionCard : public Card {
 private:
 	string city; // The city infected
 	InfectType color; // Based off an enum of InfectType, we get the color
+
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar & boost::serialization::base_object<Card>(*this);
+		ar & city & color;
+	}
 public:
 	InfectionCard(); // Default constructor
 	InfectionCard(string city, InfectType color); // Constructor setting all variables
@@ -90,6 +116,14 @@ class EventCard : public Card {
 private:
 	string name; // Name for the Event Card
 	string desc; // Description for the Event Card
+
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar & boost::serialization::base_object<Card>(*this);
+		ar & name & desc;
+	}
+
 public:
 	EventCard(); // Default constructor
 	EventCard(string name, string desc); // Constructor that sets all variables
@@ -109,6 +143,14 @@ class CityCard : public Card {
 private:
 	string city; // City name
 	InfectType color; // Color 
+
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar & boost::serialization::base_object<Card>(*this);
+		ar & city & color;
+	}
+
 public:
 	CityCard(); // Default constructor
 	CityCard(string city, InfectType color); // Constructor that sets all variables
@@ -128,6 +170,14 @@ public:
 class EpidemicCard : public Card {
 public:
 	string desc; // Description (info) for the Epidemic Card
+
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar & boost::serialization::base_object<Card>(*this);
+		ar & desc;
+	}
+
 public:
 	EpidemicCard(); // Default constructor
 	EpidemicCard(string desc); // Constructor that sets the description
@@ -151,6 +201,14 @@ private:
 	string name; // Name of the role 
 	string color; // Color for the role
 	string desc; // Description for the role
+
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar & boost::serialization::base_object<Card>(*this);
+		ar & name & color & desc;
+	}
+
 public:
 	RoleCard(); // Default constructor
 	RoleCard(string name, string color, string desc); // Constructor that sets all member variables
@@ -175,6 +233,14 @@ public:
 class ReferenceCard : public Card {
 private:
 	string reference; // The reference card
+
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar & boost::serialization::base_object<Card>(*this);
+		ar & reference;
+	}
+
 public:
 	ReferenceCard(); // Default constructor
 	~ReferenceCard(); // Default destructor

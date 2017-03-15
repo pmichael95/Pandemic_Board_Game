@@ -38,6 +38,7 @@ CityNode* GameMap::getCity(string name)
 		if (this->cityList[i]->getName() == name)
 			return this->cityList[i];
 	}
+	cout << "Error: couldn't find " << name << " and returned a nullptr" << endl;
 	return nullptr;
 }
 
@@ -63,6 +64,7 @@ void GameMap::loadStartingMap(string filename)
 		return;
 	}
 
+	cout << "Pulling out game board...." << endl;
 	while (!file.eof()) {
 		file >> datatype;
 		//Identifies cities and adds them to the map graph

@@ -13,6 +13,13 @@ class CityNode
 	vector<CityNode*> connections;
 	bool researchStation;
 
+	//Serialize//////////////////
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar & name & area & infectionLevel & researchStation & connections;
+	}
+
 public:
 	//Constructors////////////////////////////
 	CityNode();
@@ -26,6 +33,7 @@ public:
 
 	int getInfectionLevel(InfectType infection) { return this->infectionLevel[infection]; }
 	void increaseInfectionLevel(InfectType infection) { this->infectionLevel[infection]++; }
+	void reduceInfectionLevel(InfectType infection) { this->infectionLevel[infection]--; }
 	
 	bool hasResearchStation() { return this->researchStation; }
 	void addResearchStation() { this->researchStation = true; }
@@ -41,6 +49,14 @@ class GameMap
 	//Attributes/////////////////////////////////////
 	CityNode* head;
 	vector<CityNode*> cityList;
+
+	//Serialize/////////////////////////
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar.template register_type<CityNode>();
+		ar & head & cityList;
+	}
 
 public:
 	//Constructors///////////////////////////////////

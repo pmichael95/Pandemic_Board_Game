@@ -15,6 +15,15 @@ class Player
 	ReferenceCard* reference;
 	RoleCard* role;
 
+	//Serialize//////////////////
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar.template register_type<Card>();
+		ar.template register_type<CityNode>();
+		ar & id & pawn & cardsInHand & reference & role;
+	}
+
 public:
 	//Constructors////////////////////////////////
 	Player();

@@ -10,8 +10,15 @@ class Markers
 	int researchStations;
 	int diseaseCubes[NUM_OF_DISEASES];
 	int outbreakCounter;
-	const int* infectionRatePosition;
+	int infectionRatePosition;
 	CureStatus cureMarkers[NUM_OF_DISEASES];
+
+	//Serialize//////////////////
+	friend class boost::serialization::access;
+	template<typename Archive>
+	void serialize(Archive& ar, const unsigned version) {
+		ar & researchStations & diseaseCubes & outbreakCounter & cureMarkers & infectionRatePosition;
+	}
 
 public:
 	//Constructors/////////////////////////////////////
@@ -24,11 +31,12 @@ public:
 
 	int getNumOfDiseaseCubes(InfectType color) { return this->diseaseCubes[color]; }
 	bool useDiseaseCube(InfectType color);
+	void addDiseaseCube(InfectType color) { diseaseCubes[color]++; }
 
 	int getOutbreakCounter() { return this->outbreakCounter; }
 	void increaseOutbreakCounter() { this->outbreakCounter++; }
 
-	int getInfectionRate() { return *this->infectionRatePosition; }
+	int getInfectionRate() { return INFECTION_RATE[infectionRatePosition]; }
 	void increaseInfectRate() { this->infectionRatePosition++; }
 
 	CureStatus getCureMarker(InfectType infection) { return this->cureMarkers[infection]; }

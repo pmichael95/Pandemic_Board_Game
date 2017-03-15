@@ -21,9 +21,9 @@ string cureStatusEnumToString(CureStatus c)
 {
 	switch (c) {
 	case notCured:
-		return "Not Cured";
+		return "Not Cured ";
 	case cured:
-		return "Cured";
+		return "Cured     ";
 	case eradicated:
 		return "Eradicated";
 	}
