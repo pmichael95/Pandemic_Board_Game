@@ -82,7 +82,7 @@ void Deck::initialize(string fileName)
 	}
 	else if (fileName == PLAYER_CARD_INITIAL_FILE)
 	{
-		cout << "Pulling the Populating Player Deck out of the box..." << endl;
+		cout << "Pulling the Player Deck out of the box..." << endl;
 		populatePlayer(file);
 
 	}

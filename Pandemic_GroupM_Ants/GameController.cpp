@@ -45,10 +45,9 @@ void GameController::initializeNewGame()
 // Initialize Players: Initialize n number of players
 void GameController::initializePlayers() 
 {
-	ReferenceCard* ref = new ReferenceCard();
 	Deck* roleDeck = new Deck(ROLE_CARD_INITIAL_FILE);
 	for (int i = 0; i < NUM_OF_PLAYERS; i++) {
-		players[i] = new Player(i, ref);
+		players[i] = new Player(i, new ReferenceCard());
 		players[i]->setPawn(map->getHead());
 		players[i]->setRole(dynamic_cast<RoleCard*>(roleDeck->drawFromTop()));
 		for (int j = 0; j < NUM_OF_STARTING_CARDS_PER_PLAYER; j++) {
@@ -126,13 +125,13 @@ void GameController::startRound()
 	}
 	system("cls");
 
-	// Updates the map and display it 
+	// Updates the map and display all models
 	mapDisplay.updateMap(map->getCityList());
 	mapDisplay.printMap(&markers);
 
-	// Prints player details
-	playerDisplay.printPlayerDisplay(players[0]);
-	playerDisplay.printPlayerDisplay(players[1]);
+	for (int i = 0; i < NUM_OF_PLAYERS; i++) {
+		playerDisplay.printPlayerDisplay(players[i]);
+	}
 }
 
 // Switch Player Function
@@ -496,7 +495,7 @@ bool GameController::discoverCure()
 	//Check if player is at a city with a research station.
 	if (players[activePlayer]->getPawn()->hasResearchStation()) {
 		cout << "Please select 5 cards of the same color." << endl;
-		displayPlayerCards(activePlayer);
+		displayPlayerCardOptions(activePlayer);
 
 		int count[NUM_OF_DISEASES] = { 0 };
 		int answer[NUM_OF_CARDS_TO_CURE] = { 0 };
@@ -585,24 +584,79 @@ bool GameController::treatDisease()
 }
 
 // ============================== Share Knowledge Function =========================================
+//Player can give other player a card if in the same city, and the card matches the city
 bool GameController::shareKnowledge()
 {
 	int cardToPass = -1;
+	int playerWithCard = -1;
+	int otherPlayer = -1;
 	cout << "Share Knowledge Selected." << endl;
-	cout << "Which card would you like to pass to the other player?" << endl;
 
-	// Searches hand for City cards
+	//Ask who they would like to share knowledge with
+	cout << "Which player would you like to share knowlege with?" << endl;
+	for (int i = 0; i < NUM_OF_PLAYERS; i++) {
+		if (i != activePlayer) {
+			cout << "- Player " << i+1 << endl;
+		}
+	}
+	//Checks for valid input
+	if (!(cin >> otherPlayer))
+	{
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cout << "Invalid input" << endl;
+		return false;
+	}
+	otherPlayer -= 1;
+
+	// Checks if players are in the same city
+	//int otherPlayer = (activePlayer + 1) % NUM_OF_PLAYERS;
+	if (players[activePlayer]->getPawn() != players[otherPlayer]->getPawn()) {
+		cout << "Sorry, you and the other player are not in the same city, you cannot share a card." << endl;
+		return false;
+	}
+
+	// Searches active players hand for City cards that match location
 	for (int j = 0; j < players[activePlayer]->getNumOfCards(); j++)
 	{
 		if (players[activePlayer]->getCard(j)->getType() == "City")
 		{
 			CityCard *card = (dynamic_cast<CityCard*>(players[activePlayer]->getCard(j)));
-			cout << card->getCity() << " (" << j << ")" << endl;
+			if (card->getCity() == players[activePlayer]->getPawn()->getName()) {
+				cardToPass = j;
+				playerWithCard = activePlayer;
+				cout << "You have the card for this city, you may pass it." << endl;
+				break;
+			}
 		}
 	}
 
-	//Check valid input
-	if (!(cin >> cardToPass) || cardToPass < 0 || cardToPass >= players[activePlayer]->getNumOfCards())
+	// Searches other player's hand for City cards that match location
+	for (int j = 0; j < players[otherPlayer]->getNumOfCards(); j++)
+	{
+		if (players[otherPlayer]->getCard(j)->getType() == "City")
+		{
+			CityCard *card = (dynamic_cast<CityCard*>(players[otherPlayer]->getCard(j)));
+			if (card->getCity() == players[activePlayer]->getPawn()->getName()) {
+				cardToPass = j;
+				playerWithCard = otherPlayer;
+				cout << "The other player has the card for this city, they may pass it." << endl;
+				break;
+			}
+		}
+	}
+
+	//Check if no card found
+	if (cardToPass == -1) {
+		cout << "Neither of you have the card for " << players[activePlayer]->getPawn()->getName() << " and so cannot share." << endl;
+		return false;
+	}
+
+	// Get other player's approval
+	cout << "\nPlayer " << otherPlayer + 1 << " , do you approve this trade? (y/n)" << endl;
+	char answer;
+	//Checks for valid input
+	if (!(cin >> answer))
 	{
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -610,21 +664,18 @@ bool GameController::shareKnowledge()
 		return false;
 	}
 
-	// Trades Cards
-	if (players[activePlayer]->getCard(cardToPass)->getType() == "City")
-	{
-		CityCard *card = (dynamic_cast<CityCard*>(players[activePlayer]->getCard(cardToPass)));
-		int otherPlayer = (activePlayer + 1) % NUM_OF_PLAYERS;
-		players[otherPlayer]->addCard(card);
-		checkPlayerHandSize(otherPlayer);
-		players[activePlayer]->removeCard(cardToPass);
+	//If approved Transfer card
+	if (answer == 'y' || answer == 'Y'){
+		int playerWithoutCard = (playerWithCard + 1) % NUM_OF_PLAYERS;
+
+		Card* card = players[playerWithCard]->removeCard(cardToPass);
+		players[playerWithoutCard]->addCard(card);
+		checkPlayerHandSize(playerWithoutCard);
+		cout << "You have successfully passed the " << players[activePlayer]->getPawn()->getName() << " card." << endl;
 		return true;
 	}
-
-	// Error if no tradeable possibilit 
-	else
-	{
-		cout << "Action Not Possible." << endl;
+	else {
+		cout << "The other player has rejected your request" << endl;
 		return false;
 	}
 }
@@ -666,6 +717,7 @@ void GameController::phase2_DrawCards()
 	for (int i = 0; i < NUM_OF_PLAYER_CARDS_DRAWN_PER_TURN; i++) {
 		drawPlayerCard();
 	}
+
 	pause();
 }
 
@@ -683,7 +735,7 @@ void GameController::drawPlayerCard()
 	}
 	//If a city or event card -> Add to hand
 	else {
-		cout << "The card has been added player " << activePlayer + 1 << " hand" << endl;
+		cout << "The card has been added to player " << activePlayer + 1 << "'s hand" << endl;
 		cout << "\t- " << card->print() << endl;
 		players[activePlayer]->addCard(card);
 
@@ -702,14 +754,16 @@ void GameController::epidemicCardActions()
 	
 	//Add 3 cubes to a city or until an outbreak occurs
 	InfectionCard* card = dynamic_cast<InfectionCard*>(infectionDeck->drawFromBottom());
+	cout << "Infection Card drawn - " << card->print() << endl;
 	CityNode* city = map->getCity(card->getCity());
 	InfectType infection = card->getColor();
 	infectionDeck->discard(card);
-	int outbreakMemory = markers.getOutbreakCounter();
+	int outbreakCounterBefore = markers.getOutbreakCounter();
 
-	for (int i = 0; i < EPIDEMIC_INFECTION || markers.getOutbreakCounter() != outbreakMemory; i++) {
+	for (int i = 0; i < EPIDEMIC_INFECTION || markers.getOutbreakCounter() != outbreakCounterBefore; i++) {
 		infectCity(city, infection);
 	}
+	outbreakHistory.clear();
 
 	//Reshuffle discard pile and add to top of draw pile
 	infectionDeck->discardToDraw();
@@ -719,8 +773,8 @@ void GameController::epidemicCardActions()
 //Called when Player has too many cards in hand
 void GameController::discardPlayerCard(int playerIndex)
 {
-	cout << "\nPlayer " << playerIndex << " has too many cards in hand! Select one to discard:" << endl;
-	displayPlayerCards(playerIndex);
+	cout << "\nPlayer " << playerIndex + 1 << " has too many cards in hand! Select one to discard:" << endl;
+	displayPlayerCardOptions(playerIndex);
 	int answer;
 
 	// Check input
@@ -742,13 +796,13 @@ void GameController::discardPlayerCard(int playerIndex)
 //Check if players' hand of cards is too large
 void GameController::checkPlayerHandSize(int playerIndex)
 {
-	if (players[activePlayer]->getNumOfCards() > MAX_HAND_SIZE) {
+	if (players[playerIndex]->getNumOfCards() > MAX_HAND_SIZE) {
 		discardPlayerCard(playerIndex);
 	}
 }
 
 //Prints cards in hand, in order to select from them.
-void GameController::displayPlayerCards(int playerIndex)
+void GameController::displayPlayerCardOptions(int playerIndex)
 {
 	for (int i = 0; i < players[playerIndex]->getNumOfCards(); i++) {
 		Card* card = players[playerIndex]->getCard(i);
@@ -774,15 +828,18 @@ void GameController::phase3_Infects()
 	for (int i = 0; i < markers.getInfectionRate(); i++) {
 		InfectionCard* card = dynamic_cast<InfectionCard*>(infectionDeck->drawFromTop());
 		if (markers.getCureMarker(card->getColor()) != eradicated) {
+			cout << "- " << card->print() << endl;
 			infectCity(map->getCity(card->getCity()), card->getColor());
+			cout << endl;
 		}
 		infectionDeck->discard(static_cast<Card*>(card));
 	}
+	outbreakHistory.clear();
 	pause();
 }
 
 //Adds a disease cube to a city
-void GameController::infectCity(CityNode* city, InfectType infection, vector<string> outbreakHistory)
+void GameController::infectCity(CityNode* city, InfectType infection)
 {
 	//Infect city, add cube of infection color to city
 	if (city->getInfectionLevel(infection) < MAX_CUBES_PER_CITY) {
@@ -799,12 +856,12 @@ void GameController::infectCity(CityNode* city, InfectType infection, vector<str
 	else {
 		//track cities that have had an outbreak this chain.
 		outbreakHistory.push_back(city->getName());
-		handleOutbreak(city, infection, outbreakHistory);
+		handleOutbreak(city, infection);
 	}
 }
 
 //Handles Outbreak events
-void GameController::handleOutbreak(CityNode * city, InfectType infection, vector<string> outbreakHistory)
+void GameController::handleOutbreak(CityNode * city, InfectType infection)
 {
 	//increase counter and check if it has reached maximum
 	markers.increaseOutbreakCounter();
@@ -826,7 +883,7 @@ void GameController::handleOutbreak(CityNode * city, InfectType infection, vecto
 			}
 		}
 		if (!match) {
-			infectCity(connections[i], infection, outbreakHistory);
+			infectCity(connections[i], infection);
 		}
 	}
 }

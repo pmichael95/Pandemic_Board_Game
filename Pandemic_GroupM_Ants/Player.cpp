@@ -14,6 +14,10 @@ Player::~Player()
 		delete this->cardsInHand[i];
 		this->cardsInHand[i] = nullptr;
 	}
+	delete reference;
+	reference = nullptr;
+	delete role;
+	role = nullptr;
 }
 
 //Card Functions////////////////////////////////////////////

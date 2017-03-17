@@ -12,12 +12,15 @@ class GameController
 {
 	int activePlayer;
 
-	//Do these need to be passed to the views?
+	//Game Models
 	Markers markers;
 	GameMap* map;
 	Deck* infectionDeck;
 	Deck* playerDeck;
 	Player* players[NUM_OF_PLAYERS];
+
+	//Keeps track of chains of outbreaks to eliminate repeats
+	vector<string> outbreakHistory;
 
 	//Views
 	MapView mapDisplay;
@@ -68,12 +71,12 @@ private:
 	void epidemicCardActions();
 	void discardPlayerCard(int playerIndex);
 	void checkPlayerHandSize(int playerIndex);
-	void displayPlayerCards(int playerIndex);
+	void displayPlayerCardOptions(int playerIndex);
 
 	//PHASE 3 INFECTION ////////////////////////////////////////////
 	void phase3_Infects();
 
-	void infectCity(CityNode* city, InfectType infection, vector<string> outbreakHistory = vector<string>());
-	void handleOutbreak(CityNode* city, InfectType infection, vector<string> outbreakHistory);
+	void infectCity(CityNode* city, InfectType infection);
+	void handleOutbreak(CityNode* city, InfectType infection);
 };
 

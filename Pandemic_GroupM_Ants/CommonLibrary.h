@@ -24,7 +24,7 @@ const int INITIAL_INFECTION = 3;
 const int EPIDEMIC_INFECTION = 3;
 
 const int NUM_OF_PLAYERS = 2;
-const int NUM_OF_STARTING_CARDS_PER_PLAYER = 4;
+const int NUM_OF_STARTING_CARDS_PER_PLAYER = 2;
 const int MAX_HAND_SIZE = 7;
 const int NUM_OF_ACTIONS = 4;
 
