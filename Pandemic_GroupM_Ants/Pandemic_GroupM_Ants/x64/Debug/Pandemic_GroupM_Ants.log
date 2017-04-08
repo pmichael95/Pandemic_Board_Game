@@ -1,0 +1,6 @@
+﻿  GameController.cpp
+c:\users\philip\documents\comp345-groupm\pandemic_groupm_ants\pandemic_groupm_ants\player.h(35): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+c:\users\philip\documents\comp345-groupm\pandemic_groupm_ants\pandemic_groupm_ants\gamecontroller.cpp(167): warning C4390: ';': empty controlled statement found; is this the intent?
+c:\users\philip\documents\comp345-groupm\pandemic_groupm_ants\pandemic_groupm_ants\gamecontroller.cpp(513): warning C4390: ';': empty controlled statement found; is this the intent?
+  Pandemic_GroupM_Ants.vcxproj -> C:\Users\Philip\Documents\comp345-groupm\Pandemic_GroupM_Ants\x64\Debug\Pandemic_GroupM_Ants.exe
+  Pandemic_GroupM_Ants.vcxproj -> C:\Users\Philip\Documents\comp345-groupm\Pandemic_GroupM_Ants\x64\Debug\Pandemic_GroupM_Ants.pdb (Partial PDB)
