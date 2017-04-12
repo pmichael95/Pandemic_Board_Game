@@ -9,11 +9,20 @@ int main()
 {
 	GameController game;
 	//Welcome Screen
-	cout << "                                            _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ " << endl;
-	cout << "                                           |                                                                                                                     |" << endl;
-	cout << "                                           |                                                 WELCOME TO PANDEMIC!                                                |" << endl;
-	cout << "                                           |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|" << endl << endl;
-	cout << "==================================================================================================================================================================================================================" << endl << endl;
+	cout << endl << endl << endl;
+	cout << "          ==================================================================================================================================================================================================================" << endl;
+	cout << "          ||                                                                                                                                                                                                              ||" << endl;
+	cout << "          ||                                                               __________                     .___                 .__                                                                                        ||" << endl;
+	cout << "          ||                                                               \\______   \\_____     ____    __| _/  ____    _____  |__|  ____                                                                                 ||" << endl;
+	cout << "          ||                                                                |     ___/\\__  \\   /    \\  / __ | _/ __ \\  /     \\ |  |_/ ___\\                                                                                ||" << endl;
+	cout << "          ||                                                                |    |     / __ \\_|   |  \\/ /_/ | \\  ___/ |  Y Y  \\|  |\\  \\___                                                                                ||" << endl;
+	cout << "          ||                                                                |____|    (____  /|___|  /\\____ |  \\___  >|__|_|  /|__| \\___  >                                                                               ||" << endl;
+	cout << "          ||                                                                               \\/      \\/      \\/      \\/       \\/          \\/                                                                                ||" << endl;
+	cout << "          ||                                                                                                                                                                                                              ||" << endl;
+	cout << "          ==================================================================================================================================================================================================================" << endl << endl;
+	
+
+
 
 	//Request: new or saved game?
 	int answer;
@@ -22,19 +31,20 @@ int main()
 	cout << "2) Load a saved game" << endl;
 	
 	//Handle unpredictable answers
-	if (!(cin >> answer) || answer < 1 || answer > 2)
+	while (!(cin >> answer) || answer < 1 || answer > 2)
 	{
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		cout << "Invalid input" << endl;
-		return 0;
+		cout << "Invalid input, try again" << endl;
 	}
 	//Start new game
-	if (answer == 1)
+	if (answer == 1) {
 		game.initializeNewGame();
+	}
 	//Load saved game
-	else if(answer == 2)
+	else if (answer == 2) {
 		game.loadGame();
+	}
 
 	//GameLoop
 	while (true)			//Iteration #2//issue, need to stop immediately if lose/win game//
@@ -47,11 +57,11 @@ int main()
 		cout << "1) Continue" << endl;
 		cout << "2) Quit" << endl;
 		//Check input
-		if (!(cin >> answer) || answer < 1 || answer > 2)
+		while (!(cin >> answer) || answer < 1 || answer > 2)
 		{
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			cout << "Invalid input" << endl;
+			cout << "Invalid input, try again" << endl;
 			answer = 2;
 		}
 		

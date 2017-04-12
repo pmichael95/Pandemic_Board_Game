@@ -10,12 +10,34 @@ CityNode::CityNode(string name, InfectType area, bool researchStation) : name(na
 
 CityNode::~CityNode(){}
 
+void CityNode::increaseInfectionLevel(InfectType infection)
+{
+	this->infectionLevel[infection]++;
+	Notify();
+}
+
+void CityNode::reduceInfectionLevel(InfectType infection)
+{
+	this->infectionLevel[infection]--;
+	Notify();
+}
+
+void CityNode::addResearchStation()
+{
+	this->researchStation = true;
+	Notify();
+}
+
+
+
 
 //GAME MAP Class Definitions/////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Constructors//////////////////////////////////
-GameMap::GameMap() {}
+GameMap::GameMap() {
+	this->head = NULL;
+}
 
 GameMap::GameMap(string filename) {
 	loadStartingMap(filename);
@@ -85,6 +107,19 @@ void GameMap::loadStartingMap(string filename)
 		}
 		else {
 			getline(file, garbage);
+		}
+	}
+}
+
+void GameMap::showAllCityOptions()
+{
+	for (int k = 0; k < NUM_OF_CITIES; k++)
+	{
+		string name = cityList[k]->getName();
+		cout << name << " (" << k << ")\t";
+		if (k % 12 == 11)
+		{
+			cout << endl;
 		}
 	}
 }

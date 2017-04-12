@@ -1,48 +1,48 @@
-2 Atlanta
-0 Miami
-2 Washington
-2 Chicago
-0 Bogota
-0 Mexico City
-2 New York
-2 Montreal
-2 San Francisco
-0 Los Angeles
-0 Lima
-0 Sao Paulo
-2 London
-2 Madrid
-1 Tokyo
-1 Manila
-1 Sydney
-0 Santiago
-0 Lagos
-0 Buenos Aires
-2 Paris
-2 Essen
-3 Algiers
-1 Seoul
-1 Osaka
-1 Taipei
-1 Ho Chi Minh City
-1 Hong Kong
-1 Jakarta
-0 Khartoum
-0 Kinshasa
-2 Milan
-2 St Petersburg
-3 Cairo
-3 Istanbul
-1 Bejing
-1 Shanghai
-1 Bangkok
-3 Kolkata
-3 Chennai
-0 Johannesburg
-3 Moscow
-3 Baghdad
-3 Riyadh
-3 Delhi
-3 Mumbai
-3 Tehran
-3 Karachi
+Infection 2 Atlanta
+Infection 0 Miami
+Infection 2 Washington
+Infection 2 Chicago
+Infection 0 Bogota
+Infection 0 Mexico City
+Infection 2 New York
+Infection 2 Montreal
+Infection 2 San Francisco
+Infection 0 Los Angeles
+Infection 0 Lima
+Infection 0 Sao Paulo
+Infection 2 London
+Infection 2 Madrid
+Infection 1 Tokyo
+Infection 1 Manila
+Infection 1 Sydney
+Infection 0 Santiago
+Infection 0 Lagos
+Infection 0 Buenos Aires
+Infection 2 Paris
+Infection 2 Essen
+Infection 3 Algiers
+Infection 1 Seoul
+Infection 1 Osaka
+Infection 1 Taipei
+Infection 1 Ho Chi Minh City
+Infection 1 Hong Kong
+Infection 1 Jakarta
+Infection 0 Khartoum
+Infection 0 Kinshasa
+Infection 2 Milan
+Infection 2 St Petersburg
+Infection 3 Cairo
+Infection 3 Istanbul
+Infection 1 Bejing
+Infection 1 Shanghai
+Infection 1 Bangkok
+Infection 3 Kolkata
+Infection 3 Chennai
+Infection 0 Johannesburg
+Infection 3 Moscow
+Infection 3 Baghdad
+Infection 3 Riyadh
+Infection 3 Delhi
+Infection 3 Mumbai
+Infection 3 Tehran
+Infection 3 Karachi

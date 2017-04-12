@@ -7,24 +7,31 @@
 #include "Player.h"
 #include "MapView.h"
 #include "PlayerView.h"
+#include "MedicObserver.h"
+#include "ActionContext.h"
+#include "Strategy.h"
 
 class GameController
 {
 	int activePlayer;
+	int numOfPlayers;
 
 	//Game Models
 	Markers markers;
 	GameMap* map;
 	Deck* infectionDeck;
 	Deck* playerDeck;
-	Player* players[NUM_OF_PLAYERS];
-
-	//Keeps track of chains of outbreaks to eliminate repeats
-	vector<string> outbreakHistory;
+	vector<Player*> players;
 
 	//Views
-	MapView mapDisplay;
-	PlayerView playerDisplay;
+	MapView* mapDisplay; // = new MapView(&markers, map);
+	PlayerView* playerDisplay;
+
+	//Observer
+	MedicObserver* medicObserver;
+
+	//CheckBit
+	bool quietNightPlayed;
 
 public:
 	// Constructor
@@ -32,7 +39,6 @@ public:
 
 	// Destructor
 	~GameController();
-
 
 	void initializeNewGame();
 	void loadGame();
@@ -43,40 +49,22 @@ public:
 private:
 	//INITIALIZE HELPER FUNCTIONS///////////////////////////////////
 	void initializePlayers();
-	void initialInfection();
 	void addEpidemicCards();
-
+	void initialInfection();
+	void initializeObservers();
+	
 	void switchPlayers();
-	void pause();
 
 	//PHASE 1 ACTIONS//////////////////////////////////////////////
 	void phase1_Actions();
-	
-	bool driveFerry();
-	bool directFlight();
-	bool charterFlight();
-	bool shuttleFlight();
-	bool buildResearchStation();
-	bool discoverCure();
-	bool treatDisease();
-	bool shareKnowledge();
-	void printRefCard();
-
-	void checkifDiseaseEradicated(InfectType infection);
 
 	//PHASE 2 DRAW CARDS////////////////////////////////////////////
 	void phase2_DrawCards();
 
-	void drawPlayerCard();
-	void epidemicCardActions();
-	void discardPlayerCard(int playerIndex);
-	void checkPlayerHandSize(int playerIndex);
-	void displayPlayerCardOptions(int playerIndex);
-
 	//PHASE 3 INFECTION ////////////////////////////////////////////
 	void phase3_Infects();
 
-	void infectCity(CityNode* city, InfectType infection);
-	void handleOutbreak(CityNode* city, InfectType infection);
+	//END GAME ///////////////////////////
+	void endGame(bool isWon, string message);
 };
 

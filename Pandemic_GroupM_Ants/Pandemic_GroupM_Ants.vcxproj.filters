@@ -31,6 +31,24 @@
     <Filter Include="Source Files\Model">
       <UniqueIdentifier>{bb96a0e9-90ca-4418-bbc6-a3529a7ec074}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Patterns">
+      <UniqueIdentifier>{e6b393c1-568b-48df-a50d-6282221d9bee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patterns\Observer Pattern">
+      <UniqueIdentifier>{8826e267-dd4d-49be-a98c-daa54ec32734}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Patterns">
+      <UniqueIdentifier>{81420ff5-76b2-48e7-a53e-7cb15f0cd414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Patterns\Observer Pattern">
+      <UniqueIdentifier>{522ae191-1b44-41b9-b90c-fd94c0c7c72a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Patterns\Strategy Pattern">
+      <UniqueIdentifier>{1ada1871-1985-408a-ba01-2382fb128ca8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patterns\Strategy Pattern">
+      <UniqueIdentifier>{6d2b4271-583b-4ca1-8856-f04c63788d2e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonLibrary.h">
@@ -56,6 +74,30 @@
     </ClInclude>
     <ClInclude Include="Cards.h">
       <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Header Files\Patterns\Observer Pattern</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>Header Files\Patterns\Observer Pattern</Filter>
+    </ClInclude>
+    <ClInclude Include="Strategy.h">
+      <Filter>Header Files\Patterns\Strategy Pattern</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionContext.h">
+      <Filter>Header Files\Patterns\Strategy Pattern</Filter>
+    </ClInclude>
+    <ClInclude Include="MedicObserver.h">
+      <Filter>Header Files\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="CardFactory.h">
+      <Filter>Header Files\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="InfectCities.h">
+      <Filter>Header Files\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="InputOutput.h">
+      <Filter>Header Files\Controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +126,30 @@
       <Filter>Source Files\Model</Filter>
     </ClCompile>
     <ClCompile Include="GameController.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>Source Files\Patterns\Observer Pattern</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>Source Files\Patterns\Observer Pattern</Filter>
+    </ClCompile>
+    <ClCompile Include="Strategy.cpp">
+      <Filter>Source Files\Patterns\Strategy Pattern</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionContext.cpp">
+      <Filter>Source Files\Patterns\Strategy Pattern</Filter>
+    </ClCompile>
+    <ClCompile Include="MedicObserver.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="CardFactory.cpp">
+      <Filter>Source Files\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="InfectCities.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="InputOutput.cpp">
       <Filter>Source Files\Controller</Filter>
     </ClCompile>
   </ItemGroup>

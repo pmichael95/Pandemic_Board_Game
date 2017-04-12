@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -23,17 +22,16 @@ const int INFECTION_RATE[] = { 2,2,2,3,3,4,4 };
 const int INITIAL_INFECTION = 3;
 const int EPIDEMIC_INFECTION = 3;
 
-const int NUM_OF_PLAYERS = 2;
-const int NUM_OF_STARTING_CARDS_PER_PLAYER = 2;
 const int MAX_HAND_SIZE = 7;
 const int NUM_OF_ACTIONS = 4;
 
 const int NUM_OF_CITIES = 48;
 const int NUM_OF_RESEARCH_STATIONS = 6;
 
-const int NUM_OF_EPIDEMIC_CARDS = 6;
+const int NUM_OF_EPIDEMIC_CARDS = 3;
 const int NUM_OF_PLAYER_CARDS_DRAWN_PER_TURN = 2;
 const int NUM_OF_CARDS_TO_CURE = 5;
+const int NUM_OF_CARDS_TO_CURE_FOR_SCIENTIST = 4;
 
 //GAME FILES/////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -43,6 +41,26 @@ const string INFECTION_CARD_INITIAL_FILE = "../ReferenceFiles/Infection.txt";
 const string PLAYER_CARD_INITIAL_FILE = "../ReferenceFiles/Player.txt";
 const string ROLE_CARD_INITIAL_FILE = "../ReferenceFiles/Role.txt";
 const string SAVED_MAP_FILE = "../ReferenceFiles/SavedGame.txt";
+
+//ROLES//////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+const string DISPATCHER = "Dispatcher";
+const string MEDIC = "Medic";
+const string OPERATIONS = "Operations Expert";
+const string PLANNER = "Contingency Planner";
+const string QUARANTINE = "Quarantine Specialist";
+const string RESEARCHER = "Researcher";
+const string SCIENTIST = "Scientist";
+
+//EVENT CARDS/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+const string AIRLIFT = "Airlift";
+const string QUIET = "One Quiet Night";
+const string FORECAST = "Forecast";
+const string GOVERNMENT = "Government";
+const string RESILIENT = "Resilient Population";
 
 //ENUMS///////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////

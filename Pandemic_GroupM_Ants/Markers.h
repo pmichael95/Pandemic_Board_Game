@@ -1,10 +1,11 @@
 #pragma once
 
 #include "CommonLibrary.h"
+#include "Subject.h"
 
 //MARKERS CLASS////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-class Markers
+class Markers : public Subject
 {
 	//Attributes///////////////////////////////////////
 	int researchStations;
@@ -31,13 +32,28 @@ public:
 
 	int getNumOfDiseaseCubes(InfectType color) { return this->diseaseCubes[color]; }
 	bool useDiseaseCube(InfectType color);
-	void addDiseaseCube(InfectType color) { diseaseCubes[color]++; }
+	
+	// OBSERVER PATTERN: Add Disease Cube
+	void addDiseaseCube(InfectType color) {
+		diseaseCubes[color]++;
+		Notify();
+	}
+	
+	// OBSERVER PATTERN: Increase Outbreak Count
+	void increaseOutbreakCounter() {
+		this->outbreakCounter++;
+		Notify();
+	}
 
 	int getOutbreakCounter() { return this->outbreakCounter; }
-	void increaseOutbreakCounter() { this->outbreakCounter++; }
+	
+	// OBSERVER PATTERN: Increas Infection Rate
+	void increaseInfectRate() {
+		this->infectionRatePosition++;
+		Notify();
+	}
 
 	int getInfectionRate() { return INFECTION_RATE[infectionRatePosition]; }
-	void increaseInfectRate() { this->infectionRatePosition++; }
 
 	CureStatus getCureMarker(InfectType infection) { return this->cureMarkers[infection]; }
 	void cureDiseaseUpdateMarker(InfectType infection) { this->cureMarkers[infection] = cured; }

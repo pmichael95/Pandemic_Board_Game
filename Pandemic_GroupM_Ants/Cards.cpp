@@ -36,14 +36,22 @@ Deck::Deck()
 {
 	this->drawPile = deque<Card*>();
 	this->discardPile = deque<Card*>();
+
+	//Seed the random generator
+	srand(unsigned(time(0))); 
 }
 
 Deck::Deck(string fileName)
 {
+	//Seed the random generator
+	srand(unsigned(time(0)));
+
 	this->drawPile = deque<Card*>();
 	this->discardPile = deque<Card*>();
 	initialize(fileName);
 	shuffleDeck();
+
+	
 }
 
 Deck::~Deck()
@@ -56,7 +64,7 @@ Deck::~Deck()
 	for (int j = 0; j < discardPile.size(); j++)
 	{
 		delete discardPile[j];
-		drawPile[j] = nullptr;
+		discardPile[j] = nullptr;
 	}
 }
 
@@ -78,18 +86,18 @@ void Deck::initialize(string fileName)
 	if (fileName == INFECTION_CARD_INITIAL_FILE)
 	{
 		cout << "Pulling the Infection Deck out of the box..." << endl;
-		populateInfect(file);
+		populateDeck(file);
 	}
 	else if (fileName == PLAYER_CARD_INITIAL_FILE)
 	{
 		cout << "Pulling the Player Deck out of the box..." << endl;
-		populatePlayer(file);
+		populateDeck(file);
 
 	}
 	else if (fileName == ROLE_CARD_INITIAL_FILE)
 	{
 		cout << "Pulling the Role Deck out of the box..." << endl;
-		populateRole(file);
+		populateDeck(file);
 	}
 	else
 	{
@@ -99,7 +107,7 @@ void Deck::initialize(string fileName)
 	file.close();
 }
 
-void Deck::populatePlayer(ifstream& file)
+void Deck::populateDeck(ifstream& file)
 {
 	string type;
 	if (file.is_open())
@@ -108,72 +116,12 @@ void Deck::populatePlayer(ifstream& file)
 		{
 			string type;
 			file >> type;
-			if (type == "City")
-			{
-				int color;
-				string city;
-				file >> color >> ws;
-				getline(file, city);
-				Card *cityCard = new CityCard(city, (InfectType)color);
-				addCard(cityCard);
-			}
-			else if (type == "Event")
-			{
-				string name;
-				string description;
-				file >> name >> ws;
-				getline(file, description);
-				Card *eventCard = new EventCard(name, description);
-				addCard(eventCard);
-			}
+			Card *card = CardFactory::CreateCard(file, type);
+			addCard(card);
 		}
 	}
 	else
-		cout << "Invalid file configuration" << endl;
-}
-
-void Deck::populateInfect(ifstream& file)
-{
-	int color;
-	string city;
-	if (file.is_open())
-	{
-		while (!file.eof())
-		{
-			file >> color >> ws;
-			getline(file, city);
-
-			Card *infectionCard = new InfectionCard(city, (InfectType)color);
-
-			addCard(infectionCard);
-
-		}
-	}
-	else
-		cout << "Invalid file configuration" << endl;
-}
-
-void Deck::populateRole(ifstream& file)
-{
-	string title;
-	string color;
-	string description;
-	if (file.is_open())
-	{
-		while (!file.eof())
-		{
-			getline(file, title);
-			getline(file, color);
-			getline(file, description);
-
-			Card *roleCard = new RoleCard(title, color, description);
-
-			addCard(roleCard);
-
-		}
-	}
-	else
-		cout << "Invalid file configuration" << endl;
+		cout << "Invalid File Configuration" << endl;
 }
 
 int Deck::cardsInDeck()
@@ -188,13 +136,11 @@ int random(int i)
 
 void Deck::shuffleDeck()
 {
-	srand(unsigned(time(0)));
 	random_shuffle(this->getDrawPile().begin(), this->getDrawPile().end(), random);
 }
 
 void Deck::discardToDraw()
 {
-	srand(unsigned(time(0)));
 	random_shuffle(this->getDiscardPile().begin(), this->getDiscardPile().end(), random);
 	while (discardPile.size() > 0)
 	{
@@ -212,8 +158,10 @@ Card* Deck::drawFromTop()
 		drawPile.pop_back();
 		return toReturn;
 	}
-	//else
-		//lose
+	else {
+		cout << "No more cards in deck, returning nullptr" << endl;
+		return nullptr;
+	}
 }
 
 Card* Deck::drawFromBottom()
@@ -224,8 +172,17 @@ Card* Deck::drawFromBottom()
 		drawPile.pop_front();
 		return toReturn;
 	}
-	//else
-		//lose
+	else {
+		cout << "No more cards in deck, returning nullptr" << endl;
+		return nullptr;
+	}
+}
+
+Card * Deck::getDiscardedCard(int index)
+{
+	Card* card = discardPile[index];
+	discardPile.erase(discardPile.begin() + index);
+	return card;
 }
 
 void Deck::discard(Card* card)
@@ -236,6 +193,20 @@ void Deck::discard(Card* card)
 void Deck::addCard(Card* card)
 {
 	drawPile.push_back(card);
+}
+
+//Inserts epidemic cards to deck at relatively diverse intervals
+void Deck::insertEpidemicCards(int numberOfCards)
+{
+	//calculate size of deck subpiles
+	int subpileSize = this->drawPile.size() / numberOfCards;
+	//Insert epidemic card at random place in each sub card pile
+	for (int i = 0; i < numberOfCards; i++) {
+		Card* card = new EpidemicCard();
+		//position = offset of previous subpiles +  previously inserted cards + random position in own subpile
+		int position = i * subpileSize + i + random(subpileSize);
+		this->drawPile.insert(drawPile.begin() + position, card);
+	}
 }
 
 
@@ -289,6 +260,16 @@ string InfectionCard::print() {
 	return infectionPrint;
 }
 
+const bool InfectionCard::operator==(const string str) const
+{
+	if (this->city == str) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 
 
 
@@ -337,6 +318,16 @@ string EventCard::print() {
 	string eventPrint = this->getType() + " card: " + this->getName() + " (Description: " + this->getDesc() + ")";
 
 	return eventPrint;
+}
+
+const bool EventCard::operator==(const string str) const
+{
+	if (this->name == str) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 /***********************/
@@ -393,6 +384,16 @@ string CityCard::print() {
 	string cityPrint = this->getType() + " card: " + this->getCity() + "(" + this->getColorString() + ")";
 
 	return cityPrint;
+}
+
+const bool CityCard::operator==(const string str) const
+{
+	if (this->city == str) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 /***********************/
@@ -499,6 +500,16 @@ string RoleCard::print() {
 	string rolePrint = (this->getType() + ": " + this->getName() + "\n" + "      - Description: " + this->getDesc());
 
 	return rolePrint;
+}
+
+const bool RoleCard::operator==(const string str) const
+{
+	if (this->name == str) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 

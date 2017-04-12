@@ -1,10 +1,11 @@
 #pragma once
 
 #include "CommonLibrary.h"
+#include "Subject.h"
 
 //City Node Class //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class CityNode
+class CityNode : public Subject
 {
 	//Attributes//////////////////////////////
 	string name;
@@ -32,11 +33,16 @@ public:
 	InfectType getArea() { return this->area; }
 
 	int getInfectionLevel(InfectType infection) { return this->infectionLevel[infection]; }
-	void increaseInfectionLevel(InfectType infection) { this->infectionLevel[infection]++; }
-	void reduceInfectionLevel(InfectType infection) { this->infectionLevel[infection]--; }
-	
+
+	// OBSERVER PATTERN: Increase Infection Level
+	void increaseInfectionLevel(InfectType infection);
+	// OBSERVER PATTERN: Reduce Infection Level 
+	void reduceInfectionLevel(InfectType infection);
+	// OBSERVER PATTERN: Add Research Station
+	void addResearchStation();
+
 	bool hasResearchStation() { return this->researchStation; }
-	void addResearchStation() { this->researchStation = true; }
+	
 	
 	vector<CityNode*> getConnections() { return this->connections; }
 	void addConnection(CityNode* city) { this->connections.push_back(city); }
@@ -44,7 +50,7 @@ public:
 
 //GAME MAP CLASS///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class GameMap
+class GameMap : public Subject
 {
 	//Attributes/////////////////////////////////////
 	CityNode* head;
@@ -66,13 +72,16 @@ public:
 
 	//Get and Set////////////////////////////////////
 	CityNode* getHead() { return this->head; }
-
 	CityNode* getCity(string name);
-
+	CityNode* getCity(int index) {return cityList.at(index);}
+	int getNumberOfCities() { return cityList.size();}
 	vector<CityNode*> * getCityList();
+
+	//outputs all cities for selection by user
+	void showAllCityOptions();
 
 private:
 	//Helper Functions///////////////////////////////
 	void loadStartingMap(string filename);
-};
 
+};

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CommonLibrary.h"
+#include "CardFactory.h"
 #include <algorithm>
 #include <ctime>
 #include <deque>
@@ -28,6 +29,9 @@ public:
 	void setType(string type); // Sets the type of the Card
 	string getType() const; // Returns the type of the Card object
 	virtual string print() { return  ""; } // Virtual function that will be used to print out the Card object in its derived classes
+
+	//Operator overload//
+	virtual const bool operator==(const string str) const {	return false;}
 };
 
 
@@ -46,9 +50,7 @@ private:
 	deque<Card*> discardPile;
 
 	void initialize(string fileName);
-	void populatePlayer(ifstream& file);
-	void populateInfect(ifstream& file);
-	void populateRole(ifstream& file);
+	void populateDeck(ifstream& file);
 
 	friend class boost::serialization::access;
 	template<typename Archive>
@@ -72,11 +74,13 @@ public:
 
 	int cardsInDeck();
 	void shuffleDeck();
-	void discardToDraw();
+	void discardToDraw(); //Adds shuffled discard pile to the top of the draw pile
 	Card* drawFromTop();
-	Card* drawFromBottom();		//Infection Only
+	Card* drawFromBottom();	
+	Card* getDiscardedCard(int index);
 	void discard(Card* card);
 	void addCard(Card* card);
+	void insertEpidemicCards(int numberOfCards); // inserts Epidemic cards into different sectors of the deck
 };
 
 
@@ -107,6 +111,9 @@ public:
 	string getColorString() const; // Getter for the color as a string
 	InfectType getColor() const; // Returns an InfectType for the color
 	string print(); // Print method implementation from Card
+
+	//Operator overload//
+	const bool operator==(const string str) const;
 };
 
 
@@ -133,6 +140,9 @@ public:
 	string getName() const; // Getter for the Event name
 	string getDesc() const; // Getter for the Event description
 	string print(); // Implementation for print from Card
+
+	//Operator overload//
+	const bool operator==(const string str) const;
 };
 
 
@@ -161,6 +171,9 @@ public:
 	string getColorString() const; // Getter for the color as a string
 	InfectType getColor() const; // Getter for the color as an InfectType
 	string print(); // Implementation for print from Card
+
+	//Operator overload//
+	const bool operator==(const string str) const;
 };
 
 
@@ -220,6 +233,9 @@ public:
 	void setColor(string color); // Sets the role color
 	void setDesc(string desc); // Sets the role description
 	string print(); // Prints out the card (inherited)
+
+	//Operator overload//
+	const bool operator==(const string str) const;
 };
 
 
@@ -233,7 +249,7 @@ public:
 class ReferenceCard : public Card {
 private:
 	string reference; // The reference card
-
+	
 	friend class boost::serialization::access;
 	template<typename Archive>
 	void serialize(Archive& ar, const unsigned version) {
@@ -244,6 +260,7 @@ private:
 public:
 	ReferenceCard(); // Default constructor
 	~ReferenceCard(); // Default destructor
+	
 				  // NOTE: Do not need any other constructor since the reference card is always the same.
 	string getReferenceCard() const; // Return the reference card
 	string print(); // Print implementation (from Card)

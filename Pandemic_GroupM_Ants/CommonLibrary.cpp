@@ -26,5 +26,7 @@ string cureStatusEnumToString(CureStatus c)
 		return "Cured     ";
 	case eradicated:
 		return "Eradicated";
+	default:
+		return "INVALID ENUM";
 	}
 }

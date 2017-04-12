@@ -3,10 +3,11 @@
 #include "CommonLibrary.h"
 #include "Map.h"
 #include "Cards.h"
+#include "InputOutput.h"
 
 //PLAYER CLASS/////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class Player
+class Player : public Subject
 {
 	//Attributes/////////////////////////////////
 	int id;
@@ -14,6 +15,7 @@ class Player
 	vector<Card*> cardsInHand;
 	ReferenceCard* reference;
 	RoleCard* role;
+	Card* extraPlannerCard;
 
 	//Serialize//////////////////
 	friend class boost::serialization::access;
@@ -31,20 +33,41 @@ public:
 	~Player();
 
 	//Get and Set/////////////////////////////////
-	void setPawn(CityNode* position) { this->pawn = position; }
+
+	// OBSERVER PATTERN: Setting Pawn Location
+	void setPawn(CityNode* position);
 	CityNode* getPawn() { return this->pawn; }
 
 	int getId() { return id; }
 
 	RoleCard* getRole() { return this->role; }
-	void setRole(RoleCard* role) { this->role = role; }
+	// OBSERVER PATTERN: Setting Player Role
+	void setRole(RoleCard* role);
+
 	ReferenceCard* getReferenceCard() { return this->reference; }
 
+	void addExtraPlannerCard(Card* card);
+	Card* useExtraPlannerCard();
+
 	//Card Methods///////////////////////////////
+	int checkifPlayerHasCard(string name);
+	bool checkifPlayerHasCardAtIndex(string name, int index);
+	void displayPlayerCardOptions();
+	//Called to get rid of a card when Player has too many cards in hand
+	void discardPlayerCard(Deck* playerDeck);
+
 	int getNumOfCards() { return this->cardsInHand.size(); }
 	Card* getCard(int index) { return this->cardsInHand[index]; }
-	void addCard(Card* card) { this->cardsInHand.push_back(card); }
+	// OBSERVER PATTERN: Add Card to Hand
+	void addCard(Card* card);
+	// OBSERVER PATTERN: Remove Card from Hand
 	Card* removeCard(int index);
+
+	
 	string printHand();
+
+	//Operator overload//////////////////////////
+	const bool operator==(const string name);
+	
 };
 
