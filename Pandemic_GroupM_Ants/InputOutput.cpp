@@ -8,7 +8,17 @@ bool getIntInput(int & variable, int lowerbound, int upperbound)
 	{
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		cout << "ERROR: Invalid input. Please try again." << endl;
+		cout << "ERROR: Invalid input." << endl;
+		return false;
+	}
+	return true;
+}
+
+bool getEventInput(int &variable, int lowerbound, int upperbound) 
+{
+	if (!(cin >> variable) || variable < lowerbound || variable > upperbound) {
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		return false;
 	}
 	return true;
@@ -41,18 +51,13 @@ bool getAnotherPlayersApproval(int otherPlayer)
 // Return: T/F to see if we want to perform an action
 bool promptEvent(int &playerID, int numOfPlayers)
 {
-	bool correct = false;
 	int input;
-	// Smart input handling, keep going until a proper input is provided.
-	do {
-		cout << "\nWould any player like to play an Event Card? Enter the player # (1, 2, 3, or 4).\nIf no player wishes to play an Event Card, enter 0." << endl;
-		if (getIntInput(input, 0, numOfPlayers)) {
-			correct = true;
-		}
-	} while (!correct);
+
+	cout << "\nWould any player like to play an Event Card? Enter the player # (1, 2, 3, or 4).\nIf not, enter any other key" << endl;
+	cout << "> ";
 
 	// NOW HANDLE WHICH PLAYER CHOSE TO PLAY AN EVENT CARD & HANDLE EVENT CARD ACTIONS
-	if (input != 0) {
+	if (getEventInput(input, 1, numOfPlayers)) {
 		cout << "\nPlayer #" << input << " decided to use an Event Card." << endl;
 		playerID = input;
 		return true;
@@ -67,5 +72,6 @@ void pause()
 {
 	char key;
 	cout << "\nReady to continue? (Enter any key to continue.)" << endl;
+	cout << "> ";
 	cin >> key;
 }

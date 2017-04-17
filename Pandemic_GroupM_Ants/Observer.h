@@ -8,10 +8,11 @@ class Observer {
 	public:
 
 		// Destructor
-		~Observer();
+		virtual ~Observer();
 
 		// Update Function
-		virtual void Update() = 0;
+		// virtual void Update() = 0;
+		virtual void Update(string message) = 0;
 
 	protected:
 

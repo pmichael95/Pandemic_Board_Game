@@ -32,6 +32,7 @@ const int NUM_OF_EPIDEMIC_CARDS = 3;
 const int NUM_OF_PLAYER_CARDS_DRAWN_PER_TURN = 2;
 const int NUM_OF_CARDS_TO_CURE = 5;
 const int NUM_OF_CARDS_TO_CURE_FOR_SCIENTIST = 4;
+const int NUM_OF_CARDS_FOR_FORCAST = 6;
 
 //GAME FILES/////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////

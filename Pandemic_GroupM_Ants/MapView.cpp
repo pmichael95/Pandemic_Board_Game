@@ -6,7 +6,7 @@ using namespace std;
 
 
 // Constructor
-MapView::MapView(Markers* markers, GameMap* map) {
+MapView::MapView(Markers* markers, GameMap* map, vector<Player*> playerList) {
 	this->subjMarker = markers;
 	this->subjMarker->Attach(this);
 
@@ -16,24 +16,39 @@ MapView::MapView(Markers* markers, GameMap* map) {
 	for (int i = 0; i < map->getNumberOfCities(); i++) {
 		this->subjMap->getCity(i)->Attach(this);
 	}
+
+	this->subjPlayers = playerList;
+	for (int i = 0; i < subjPlayers.size(); i++) {
+		this->subjPlayers[i]->Attach(this);
+	}
 }
 
 // Destructor
-MapView::~MapView() { 
-	this->subjMarker->Detach(this);
-	
-	for (int i = 0; i < subjMap->getNumberOfCities(); i++) {
-		this->subjMap->getCity(i)->Detach(this);
-	}
-
-	this->subjMap->Detach(this);
-
-}
+MapView::~MapView() {}
 
 // OBSERVER PATTERN: Update 
-void MapView::Update() {
-	//updateMap(subjMap->getCityList());
-	printMap();
+//void MapView::Update() {
+//	//updateMap(subjMap->getCityList());
+//	printMap();
+//}
+
+// OBSERVER PATTERN: Update 
+void MapView::Update(string message) {
+	//Message from Player model
+	regex re("Player (.*)");
+	if (regex_match(message, re)) {
+		regex re2("(.*) moved");
+		if (regex_match(message, re2)) {
+			clearScreen();
+			printMap();
+		}
+	}
+	else if (message == "Disease Cube Used" || message == "City Infection Increased! " || message == "Outbreak has been increased! " || message == "Infection Rate has been increased! ");
+	//Do Nothing
+	else {
+		clearScreen();
+		printMap();
+	}
 }
 
 // ============ Print Map Function ====================
@@ -45,45 +60,46 @@ void MapView::printMap() {
 	cout << "                                                                                         ----------------------------------------------    " << endl;
 	cout << "                                                                                        |  Infection Cubes [Yellow, Red, Blue, Black]  |   " << endl;
 	cout << "                                                                                        |            [R-S] = Research Station          |   " << endl;
+	cout << "                                                                                        |             (#) = Player Position            |   " << endl;
 	cout << "                                                                                         -------------------- Legend ------------------ \n" << endl;
 	
 	// MAP: First Line
-	cout << "                                                                        London          Essen       St. Pertersberg                    Moscow                                           Beijing         Seoul        " << endl;
+	cout << "                                                                     " << mapPlayerPos[12] << "London       " << mapPlayerPos[21] << "Essen    " << mapPlayerPos[32] << "St. Pertersberg                 " << mapPlayerPos[41] << "Moscow                                        " << mapPlayerPos[35] << "Beijing      " << mapPlayerPos[23] << "Seoul        " << endl;
 	cout << "                                                           --------- " << cityInfection[12] << " -- " << cityInfection[21] << " -- " << cityInfection[32] << " ----------------- " << cityInfection[41] << "                                     " << cityInfection[35] << " -- " << cityInfection[23] << endl;
 	cout << "                                                          |              " << mapResearchStation[12] << "    \\     " << mapResearchStation[21] << "     \\      " << mapResearchStation[32] << "            |             " << mapResearchStation[41] << "                                           " << mapResearchStation[35] << "     /     " << mapResearchStation[23] << "       " << endl;
 	cout << "                                                          |                |       \\      |        \\                      |               |                                               |      /        |          " << endl;
 	cout << "                                                          |                |        \\     |         \\                     |               |                                               |     /         |           " << endl;
 	
 	// MAP: Second Line
-	cout << "     San Fransisco      Chicago        Montreal        New York         Madrid          Paris           Milan             |               |                                            Shanghai         Tokyo        " << endl;
+	cout << "  " << mapPlayerPos[8] << "San Fransisco   " << mapPlayerPos[3] << "Chicago     " << mapPlayerPos[7] << "Montreal     " << mapPlayerPos[6] << "New York      " << mapPlayerPos[13] << "Madrid       " << mapPlayerPos[20] << "Paris        " << mapPlayerPos[31] << "Milan             |               |                                         " << mapPlayerPos[36] << "Shanghai      " << mapPlayerPos[14] << "Tokyo     " << endl;
 	cout << " ----" << cityInfection[8] << " -- " << cityInfection[3] << " -- " << cityInfection[7] << " -- " << cityInfection[6] << " -- " << cityInfection[13] << " -- " << cityInfection[20] << " -- " << cityInfection[31] << "         |               |                                          " << cityInfection[36] << " -- " << cityInfection[14] << "----" << endl;
 	cout << "    /   " << mapResearchStation[8] << "       /    " << mapResearchStation[3] << "   \\       " << mapResearchStation[7] << "  \\       " << mapResearchStation[6] << "            " << mapResearchStation[13] << "    \\     " << mapResearchStation[20] << "           " << mapResearchStation[31] << "    \\        |               |                                             " << mapResearchStation[36] << "          " << mapResearchStation[14] << "        " << endl;
 	cout << "   /      |       /        |       \\              \\       |                |       \\      |                       \\       |               |                                               |    \\          |               " << endl;
 	cout << "  /       |     /          |         \\              \\     |                |        \\     |                        \\      |               |                                               |     \\         |             " << endl;
 	
 	// MAP: Third Line
-	cout << "     Los Angeles           |            Atlanta       Washington           |           Algiers                         Istanbul         Tehran                                            |      \\      Osaka        " << endl;
+	cout << "  " << mapPlayerPos[9] << "Los Angeles           |         " << mapPlayerPos[0] << "Atlanta    " << mapPlayerPos[2] << "Washington           |        " << mapPlayerPos[22] << "Algiers                      " << mapPlayerPos[34] << "Istanbul      " << mapPlayerPos[46] << "Tehran                                            |      \\   " << mapPlayerPos[24] << "Osaka        " << endl;
 	cout << "     " << cityInfection[9] << "          |         " << cityInfection[0] << " -- " << cityInfection[2] << "          |         " << cityInfection[22] << " -----------------  " << cityInfection[34] << "    " << cityInfection[46] << " --------                                |       \\  " << cityInfection[24] << endl;
 	cout << "    /   " << mapResearchStation[9] << "              |             " << mapResearchStation[0] << "  \\       " << mapResearchStation[2] << "              |            " << mapResearchStation[22] << "                     /     " << mapResearchStation[34] << "      /    " << mapResearchStation[46] << "             |                               |        \\    " << mapResearchStation[24] << "        " << endl;
 	cout << "   /      |                |                      \\       |                |              |                     /         |      /        |               |                               |         \\     |            " << endl;
 	cout << "  /       |                |                        \\     |                |              |                   /           |    /          |               |                               |          \\    |            " << endl;
 	
 	// MAP: Forth Line
-	cout << "          |           Mexico City                       Miami              |              |             Cairo          Baghdad         Karachi          Delhi           Kokata        Hong Kong         Taipei     " << endl;
+	cout << "          |        " << mapPlayerPos[5] << "Mexico City                    " << mapPlayerPos[1] << "Miami              |              |          " << mapPlayerPos[33] << "Cairo       " << mapPlayerPos[42] << "Baghdad      " << mapPlayerPos[47] << "Karachi       " << mapPlayerPos[44] << "Delhi        " << mapPlayerPos[38] << "Kolkata    " << mapPlayerPos[27] << "Hong Kong      " << mapPlayerPos[25] << "Taipei     " << endl;
 	cout << "           --------- " << cityInfection[5] << " ------------------ " << cityInfection[1] << "          |              ---------- " << cityInfection[33] << " -- " << cityInfection[42] << " -- " << cityInfection[47] << " -- " << cityInfection[44] << " -- " << cityInfection[38] << " -- " << cityInfection[27] << " -- " << cityInfection[25] << endl;
 	cout << "                         " << mapResearchStation[5] << "   \\                      " << mapResearchStation[1] << "              |                            " << mapResearchStation[33] << "  \\        " << mapResearchStation[42] << "      /    " << mapResearchStation[47] << "      /     " << mapResearchStation[44] << "      /    " << mapResearchStation[38] << "      /   " << mapResearchStation[27] << "    \\      " << mapResearchStation[25] << "           " << endl;
 	cout << "                           |       --------------         |                |                              |       \\       |      /        |      /         |      /        |      /       |        \\      |        /  " << endl;
 	cout << "                           |                     \\        |                |                              |         \\     |    /          |    /           |    /          |    /         |          \\    |       /    " << endl;
 	
 	// MAP: Fifth Line
-	cout << "                         Lima                      \\    Bogota         Sao Paula         Lagos         Khartoum         Riyadh          Mumbai          Chennai         Bangkok    Ho Chi Minh City     Manila   /  " << endl;
+	cout << "                      " << mapPlayerPos[10] << "Lima                      \\ " << mapPlayerPos[4] << "Bogota      " << mapPlayerPos[11] << "Sao Paula      " << mapPlayerPos[18] << "Lagos      " << mapPlayerPos[29] << "Khartoum      " << mapPlayerPos[42] << "Riyadh       " << mapPlayerPos[45] << "Mumbai       " << mapPlayerPos[39] << "Chennai      " << mapPlayerPos[37] << "Bangkok " << mapPlayerPos[26] << "Ho Chi Minh City  " << mapPlayerPos[15] << "Manila   /  " << endl;
 	cout << "                     " << cityInfection[10] << " ------------------ " << cityInfection[4] << " -- " << cityInfection[11] << " -- " << cityInfection[18] << " -- " << cityInfection[29] << "    " << cityInfection[42] << "    " << cityInfection[45] << " -- " << cityInfection[39] << " -- " << cityInfection[37] << " -- " << cityInfection[26] << " -- " << cityInfection[15] << endl;
 	cout << "                         " << mapResearchStation[10] << "                          " << mapResearchStation[4] << "            " << mapResearchStation[11] << "           " << mapResearchStation[18] << "      /   " << mapResearchStation[29] << "           " << mapResearchStation[42] << "           " << mapResearchStation[45] << "            " << mapResearchStation[39] << "           " << mapResearchStation[37] << "     /    " << mapResearchStation[26] << "           " << mapResearchStation[15] << "         " << endl;
 	cout << "                           |                              |                |               |      /       |                                                |               |      /                       |         /     " << endl;
 	cout << "                           |                              |                |               |    /         |                                                |               |     /                        |        /   " << endl;
 	
 	// MAP: Sixth Line
-	cout << "                        Santiago                     Buenos Aires          |           Kinshasa      Johannesburg                                          |            Jakarta                         Sydney    /        " << endl;
+	cout << "                     " << mapPlayerPos[17] << "Santiago                  " << mapPlayerPos[19] << "Buenos Aires          |        " << mapPlayerPos[30] << "Kinshasa   " << mapPlayerPos[40] << "Johannesburg                                          |         " << mapPlayerPos[28] << "Jakarta                      " << mapPlayerPos[16] << "Sydney    /        " << endl;
 	cout << "                     " << cityInfection[17] << "                    " << cityInfection[19] << " ---------          " << cityInfection[30] << " -- " << cityInfection[40] << "                                          --------- " << cityInfection[28] << " ------------------ " << cityInfection[16] << endl;
 	cout << "                         " << mapResearchStation[17] << "                          " << mapResearchStation[19] << "                            " << mapResearchStation[30] << "           " << mapResearchStation[40] << "                                                           " << mapResearchStation[28] << "                           " << mapResearchStation[16] << "" << endl;
 	cout << endl;
@@ -107,6 +123,11 @@ string MapView::fillNumber(int number) {
 		return to_string(number);
 }
 
+void MapView::setActivePlayer(int playerID)
+{
+	activePlayer = playerID;
+}
+
 // Update map for the Infection Rate on each city
 void MapView::updateMap(const vector<CityNode *> * cityList) {
 
@@ -122,6 +143,18 @@ void MapView::updateMap(const vector<CityNode *> * cityList) {
 		}
 		else
 			mapResearchStation[i] = "     ";
+
+		//Sets default to display nothing, only overriden if player is at city location
+		mapPlayerPos[i] = "   ";
+		for (int k = 0; k < subjPlayers.size(); k++) {
+			if (subjPlayers[k]->getPawn() == cityList->at(i)) {
+				mapPlayerPos[i] = "(" + to_string(subjPlayers[k]->getId()+1) + ")";
+			}
+		}
+		//If stacked players, show active player on display
+		if (subjPlayers[activePlayer]->getPawn() == cityList->at(i)) {
+			mapPlayerPos[i] = "(" + to_string(subjPlayers[activePlayer]->getId() + 1) + ")";
+		}
 
 		for (int j = 0; j < NUM_OF_DISEASES; j++) {
 

@@ -6,12 +6,13 @@
 #include "Map.h"
 #include "Player.h"
 #include "Markers.h"
+#include "Command.h"
 
 class Strategy
 {
 public:
 	Strategy() {}
-	~Strategy() {}
+	virtual ~Strategy() {}
 
 	virtual bool execute(GameMap* map, Markers* markers, vector<Player*> playerList, Deck* playerDeck, Deck* infectionDeck, int activePlayer, bool &quietNightPlayed) = 0;
 

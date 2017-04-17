@@ -520,24 +520,24 @@ const bool RoleCard::operator==(const string str) const
 
 // Default constructor that initializes the reference card
 ReferenceCard::ReferenceCard() : Card("Reference") {
-	this->reference = "\n== BASIC ACTIONS ==\n"
+	this->reference = "\n\n==================== BASIC ACTIONS ====================\n"
 		"\n* Drive (or Ferry)"
-		"\nMove your pawn to an adjacent City.\n"
+		"\n  -> Move your pawn to an adjacent City.\n"
 		"\n* Direct Flight"
-		"\nDiscard a card to move your pawn to the City pictured on it.\n"
+		"\n  -> Discard a card to move your pawn to the City pictured on it.\n"
 		"\n* Charter Flight"
-		"\nDiscard the card showing your current City and move to any City on the board.\n"
+		"\n  -> Discard the card showing your current City and move to any City on the board.\n"
 		"\n* Shuttle Flight"
-		"\nMove to a City containing a Research Station if your pawn is in a City containing one.\n"
-		"\n== SPECIAL ACTIONS==\n"
+		"\n  -> Move to a City containing a Research Station if your pawn is in a City containing one.\n"
+		"\n==================== SPECIAL ACTIONS ====================\n"
 		"\n* Build a Research Station"
-		"\nDiscard the card showing your current City to build a Research Station there.\n"
+		"\n  -> Discard the card showing your current City to build a Research Station there.\n"
 		"\n* Discover a Cure"
-		"\nDiscard 5 cards of the same color to cure the disease of that color.\nYour pawn must be in a City containing a Research Station.\n"
+		"\n  -> Discard 5 cards of the same color to cure the disease of that color.\n  -> Your pawn must be in a City containing a Research Station.\n"
 		"\n* Treat Disease"
-		"\nRemove a disease cube from the City your pawn occupies. If the cure has been found, remove ALL cubes of that color from the City.\n"
+		"\n  -> Remove a disease cube from the City your pawn occupies. If the cure has been found, remove ALL cubes of that color from the City.\n"
 		"\n* Share Knowledge"
-		"\nPass a card from one Player to another.\nBother Players' pawns must be in the City pictured on the card that is passed.\n";
+		"\n  -> Pass a card from one Player to another.\n  -> Bother Players' pawns must be in the City pictured on the card that is passed.\n";
 }
 
 // Default destructor

@@ -13,26 +13,38 @@ PlayerView::PlayerView(vector<Player*>* player) {
 }
 
 // Destructor
-PlayerView::~PlayerView() { 
-	for (int i = 0; i < subjPlayers.size(); i++) {
-		this->subjPlayers.at(i)->Detach(this);
-	}
-}
+PlayerView::~PlayerView() {	}
 
-// Overriden Observer Pattern: Update()
-void PlayerView::Update() {
-	printPlayerDisplay(this->playerIndex);
+
+// Overriden Observer Pattern: Update(message)
+void PlayerView::Update(string message) {
+
+	try {
+		string number = message.substr(7, 1);
+		int changedPlayer = atoi(number.c_str());
+		if (changedPlayer == playerIndex) {
+			regex re2("(.*) moved");
+			if (!regex_match(message, re2)) {
+				cout << endl;
+				printPlayerDisplay(this->playerIndex);
+			}
+		}
+		//else do nothing.
+	}
+	//Message not from Player model
+	catch (const std::out_of_range& oor) {
+		printPlayerDisplay(this->playerIndex);
+	}	
 }
 
 // Print PLayerView Function
 void PlayerView::printPlayerDisplay(int index) const{
 
-	cout << " ===================================================================== " << endl;
+	cout << " ************************************************************************************************************************** " << endl;
 	cout << "   Player #" << subjPlayers.at(index)->getId() + 1 << "- Location: " << subjPlayers.at(index)->getPawn()->getName() << endl;
 	cout << "\n   " << subjPlayers.at(index)->getRole()->print() << endl;
 	cout << "\n   " << subjPlayers.at(index)->printHand() << endl;
-	cout << " ===================================================================== " << endl << endl;
-	
+	cout << " **************************************************************************************************************************\n " << endl;
 }
 
 // Clear Player Display

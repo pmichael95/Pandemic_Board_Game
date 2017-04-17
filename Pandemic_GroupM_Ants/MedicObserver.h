@@ -15,6 +15,7 @@ public:
 	MedicObserver(Player* player, GameMap* map, Markers* markers);
 	~MedicObserver() {}
 
-	void Update();
+	// void Update();
+	void Update(string message);
 };
 

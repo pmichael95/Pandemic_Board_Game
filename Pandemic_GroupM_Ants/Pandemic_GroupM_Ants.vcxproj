@@ -124,6 +124,7 @@
     <ClInclude Include="ActionContext.h" />
     <ClInclude Include="CardFactory.h" />
     <ClInclude Include="Cards.h" />
+    <ClInclude Include="Command.h" />
     <ClInclude Include="CommonLibrary.h" />
     <ClInclude Include="GameController.h" />
     <ClInclude Include="InfectCities.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="ActionContext.cpp" />
     <ClCompile Include="CardFactory.cpp" />
     <ClCompile Include="Cards.cpp" />
+    <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommonLibrary.cpp" />
     <ClCompile Include="GameController.cpp" />
     <ClCompile Include="InfectCities.cpp" />

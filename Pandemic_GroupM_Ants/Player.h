@@ -32,42 +32,39 @@ public:
 	Player(int id, ReferenceCard* referenceCard);
 	~Player();
 
-	//Get and Set/////////////////////////////////
-
-	// OBSERVER PATTERN: Setting Pawn Location
-	void setPawn(CityNode* position);
+	//Getters/////////////////////////////////
 	CityNode* getPawn() { return this->pawn; }
-
 	int getId() { return id; }
-
 	RoleCard* getRole() { return this->role; }
-	// OBSERVER PATTERN: Setting Player Role
-	void setRole(RoleCard* role);
-
+	void setRole(RoleCard* role) { this->role = role; }
 	ReferenceCard* getReferenceCard() { return this->reference; }
+	int getNumOfCards() { return this->cardsInHand.size(); }
+	Card* getCard(int index) { return this->cardsInHand[index]; }
 
+	//Setters////////////////////////////
+	void movePawn(CityNode* newLocation);
+	Card** discardCard(int* index, int size);
+	Card** addCard(Card* card);
+	Card** moveAndDiscard(CityNode* newLocation, int index);
 	void addExtraPlannerCard(Card* card);
-	Card* useExtraPlannerCard();
 
 	//Card Methods///////////////////////////////
 	int checkifPlayerHasCard(string name);
 	bool checkifPlayerHasCardAtIndex(string name, int index);
+	bool checkifPlayerHasEventCard();
 	void displayPlayerCardOptions();
-	//Called to get rid of a card when Player has too many cards in hand
-	void discardPlayerCard(Deck* playerDeck);
 
-	int getNumOfCards() { return this->cardsInHand.size(); }
-	Card* getCard(int index) { return this->cardsInHand[index]; }
-	// OBSERVER PATTERN: Add Card to Hand
-	void addCard(Card* card);
-	// OBSERVER PATTERN: Remove Card from Hand
-	Card* removeCard(int index);
-
-	
 	string printHand();
 
 	//Operator overload//////////////////////////
 	const bool operator==(const string name);
+
+private:
+
+	//Setters ////////////////////////////////////
+	Card* useExtraPlannerCard();
+	Card* removeCard(int index);
+	Card** tooManyCards(); //Called to get rid of a card when Player has too many cards in hand
 	
 };
 

@@ -45,6 +45,9 @@ Card * CardFactory::CreateCard(ifstream& file, string type)
 		getline(file, color);
 		getline(file, description);
 
+		// Remove whitespace at start/end of title
+		title.erase(title.begin(), std::find_if(title.begin(), title.end(), std::bind1st(std::not_equal_to<char>(), ' ')));
+
 		Card *roleCard = new RoleCard(title, color, description);
 
 		return roleCard;

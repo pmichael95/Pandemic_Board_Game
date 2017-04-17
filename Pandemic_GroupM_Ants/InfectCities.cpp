@@ -72,7 +72,7 @@ void InfectCities::handleOutbreak(CityNode * city, InfectType infection, Markers
 		return;
 	}
 
-	cout << "---------An outbreak has occurred in " << city->getName() << "!!!-----------" << endl;
+	cout << "\n=========== An outbreak has occurred in " << city->getName() << " ===========" << endl;
 
 	//Infect all connected cities.
 	vector<CityNode*> connections = city->getConnections();

@@ -14,11 +14,11 @@ class Subject {
 		Subject();
 
 		// Destructor
-		~Subject();
+		virtual ~Subject();
 
 		virtual void Attach(Observer* obv);		// Attaching an Observer
 		virtual void Detach(Observer* obv);		// Detaching an Observer
-		virtual void Notify();					// Notify the Observers when there is a change
+		virtual void Notify(string message);	// Notify the Observers when there is a change with a message
 
 	private:
 		list<Observer*>* obv;					// List of Observers

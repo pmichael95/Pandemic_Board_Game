@@ -29,6 +29,9 @@ int main()
 	cout << "Would you like to:" << endl;
 	cout << "1) Start a new game" << endl;
 	cout << "2) Load a saved game" << endl;
+
+	// Input Tick for visual purposes 
+	cout << "> ";
 	
 	//Handle unpredictable answers
 	while (!(cin >> answer) || answer < 1 || answer > 2)

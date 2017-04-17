@@ -72,19 +72,20 @@ bool DriveFerry::execute(GameMap* map, Markers* markers, vector<Player*> playerL
 
 	// Check for possible nearby cities 
 	for (int i = 0; i < connections.size(); i++) {
-		cout << connections[i]->getName() << " (" << i << ")" << endl;
+		cout << "(" << i + 1 << ") " << connections[i]->getName() << "     ";
 	}
 
 	// Input Tick for visual purposes 
-	cout << "> ";
+	cout << "\n> ";
 
 	//Check input
-	if (!getIntInput(newLocation, 0, connections.size())) {
+	if (!getIntInput(newLocation, 1, connections.size() + 1)) {
 		return false;
 	}
 
 	// Change location of the player
-	playerList[playerOfPawn]->setPawn(connections[newLocation]);
+	MovePawn command(playerList[playerOfPawn], connections[newLocation - 1]);
+	command.execute();
 	cout << "Player " << playerOfPawn + 1 << " is now in " << playerList[playerOfPawn]->getPawn()->getName() << endl << endl;
 	return true;
 }
@@ -103,6 +104,7 @@ bool DirectFlight::execute(GameMap* map, Markers* markers, vector<Player*> playe
 	cout << "Direct Flight Selected: Where would you like to go? (To go back to menu enter non-displayed character)" << endl;
 	int newLocation;
 	vector<CityNode*> connections;
+	vector<int> indexes;
 	//go through hand and find city cards and add them to possible connections
 	for (int l = 0; l < playerList[activePlayer]->getNumOfCards(); l++)
 	{
@@ -110,6 +112,7 @@ bool DirectFlight::execute(GameMap* map, Markers* markers, vector<Player*> playe
 		{
 			CityCard *card = dynamic_cast<CityCard*>(playerList[activePlayer]->getCard(l));
 			connections.push_back(map->getCity(card->getCity()));
+			indexes.push_back(l);
 		}
 	}
 
@@ -120,32 +123,28 @@ bool DirectFlight::execute(GameMap* map, Markers* markers, vector<Player*> playe
 	}
 	//print out where the player can fly
 	for (int k = 0; k < connections.size(); k++) {
-		cout << connections[k]->getName() << " (" << k << ")" << endl;
+		cout << " (" << k + 1 << ")" << connections[k]->getName() << "     ";
 	}
 
 	// Input Tick for visual purposes 
-	cout << "> ";
+	cout << "\n> ";
 
 	//check input
-	if (!getIntInput(newLocation, 0, connections.size())) {
+	if (!getIntInput(newLocation, 1, connections.size() + 1)) {
 		return false;
 	}
 
-	playerList[playerOfPawn]->setPawn(connections[newLocation]);
-	//go through hand to find city card used and remove it
-	for (int j = 0; j < playerList[activePlayer]->getNumOfCards(); j++)
-	{
-		if (playerList[activePlayer]->getCard(j)->getType() == "City")
-		{
-			if (*playerList[activePlayer]->getCard(j) == playerList[activePlayer]->getPawn()->getName())
-			{
-				Card* card = playerList[activePlayer]->removeCard(j);
-				delete card;
-				card = nullptr;
-			}
-		}
+	//Take actions
+	if (playerOfPawn == activePlayer) {
+		DiscardCardAndMove command(playerList[activePlayer], connections[newLocation - 1], indexes[newLocation-1], playerDeck);
+		command.execute();
 	}
-
+	else {
+		MovePawn command1(playerList[playerOfPawn], connections[newLocation - 1]);
+		DiscardCard command2(playerList[activePlayer], &indexes[newLocation - 1], 1, playerDeck);
+		command1.execute();
+		command2.execute();
+	}
 	cout << "Player " << playerOfPawn + 1 << " is now in " << playerList[playerOfPawn]->getPawn()->getName() << endl << endl;
 	return true;
 }
@@ -177,14 +176,17 @@ bool CharterFlight::execute(GameMap* map, Markers* markers, vector<Player*> play
 			return false;
 		}
 
-		// Change the location of the player
-		playerList[playerOfPawn]->setPawn(map->getCityList()->at(newLocation));
-
-		//remove card
-		Card* card = playerList[activePlayer]->removeCard(cardIndex);
-		delete card;
-		card = nullptr;
-
+		//Take actions
+		if (playerOfPawn == activePlayer) {
+			DiscardCardAndMove command(playerList[activePlayer], map->getCityList()->at(newLocation), cardIndex, playerDeck);
+			command.execute();
+		}
+		else {
+			MovePawn command1(playerList[playerOfPawn], map->getCityList()->at(newLocation));
+			DiscardCard command2(playerList[activePlayer], &cardIndex, 1, playerDeck);
+			command1.execute();
+			command2.execute();
+		}
 
 		cout << "Player " << playerOfPawn + 1 << " is now in " << playerList[playerOfPawn]->getPawn()->getName() << endl << endl;
 		return true;
@@ -230,7 +232,9 @@ bool ShuttleFlight::execute(GameMap* map, Markers* markers, vector<Player*> play
 		}
 
 		// Change the location of the player
-		playerList[playerOfPawn]->setPawn(map->getCityList()->at(newLocation));
+		MovePawn command(playerList[playerOfPawn], map->getCityList()->at(newLocation));
+		command.execute();
+		cout << "Player " << playerOfPawn + 1 << " is now in " << playerList[playerOfPawn]->getPawn()->getName() << endl << endl;
 		return true;
 	}
 
@@ -262,7 +266,8 @@ bool ShuttleFlight::execute(GameMap* map, Markers* markers, vector<Player*> play
 	}
 
 	// Move Player to the City 
-	playerList[playerOfPawn]->setPawn(researchStation[newLocation]);
+	MovePawn command(playerList[playerOfPawn], researchStation[newLocation]);
+	command.execute();
 	cout << "Player " << playerOfPawn + 1 << " is now in " << playerList[playerOfPawn]->getPawn()->getName() << endl << endl;
 	return true;
 
@@ -304,7 +309,8 @@ bool DispatcherMovement::execute(GameMap* map, Markers* markers, vector<Player*>
 		otherPlayer--;
 
 		//Move Player
-		playerList[playerOfPawn]->setPawn(playerList[otherPlayer]->getPawn());
+		MovePawn command(playerList[playerOfPawn], playerList[otherPlayer]->getPawn());
+		command.execute();
 		cout << "Player " << playerOfPawn + 1 << " is now in " << playerList[playerOfPawn]->getPawn()->getName() << endl << endl;
 		return true;
 	}
@@ -345,10 +351,10 @@ bool BuildResearchStation::execute(GameMap* map, Markers* markers, vector<Player
 			//Build a research station
 			if (markers->useResearchStation()) {
 				playerList[activePlayer]->getPawn()->addResearchStation();
-				cout << "Research Station Added! ";
-				Card* card = playerList[activePlayer]->removeCard(index);
-				delete card;
-				card = nullptr;
+				cout << "Research Station Added! " << endl;
+				DiscardCard command(playerList[activePlayer], &index, 1, playerDeck);
+				command.execute();
+				cout << "Research Station Added! " << endl;
 				return true;
 			}
 			//No research station markers left
@@ -422,13 +428,8 @@ bool DiscoverCure::execute(GameMap* map, Markers* markers, vector<Player*> playe
 		for (int i = 0; i < NUM_OF_DISEASES; i++) {
 			if (count[i] == numberToCure) {
 
-				//Discard Cards
-				Card* card;
-				for (int j = 0; j < numberToCure; j++) {
-					card = playerList[activePlayer]->removeCard(answer[j]);
-					delete card;
-					card = nullptr;
-				}
+				DiscardCard command(playerList[activePlayer], answer, numberToCure, playerDeck);
+				command.execute();
 
 				//Cure Disease
 				markers->cureDiseaseUpdateMarker(static_cast<InfectType>(i));
@@ -523,7 +524,7 @@ bool ShareKnowledge::execute(GameMap* map, Markers* markers, vector<Player*> pla
 	cout << "Which player would you like to share knowlege with?" << endl;
 	for (int i = 0; i < playerList.size(); i++) {
 		if (i != activePlayer) {
-			cout << "- Player " << i + 1 << endl;
+			cout << "- Player " << "(" << i + 1 << ")" << endl;
 		}
 	}
 
@@ -544,7 +545,7 @@ bool ShareKnowledge::execute(GameMap* map, Markers* markers, vector<Player*> pla
 
 	//Special Case: Researcher can give any card
 	if (*playerList[activePlayer] == RESEARCHER) {
-		cout << "Please select the card to pass." << endl;
+		cout << "\nPlease select the card to pass." << endl;
 		playerList[activePlayer]->displayPlayerCardOptions();
 
 		// Input Tick for visual purposes 
@@ -613,12 +614,8 @@ bool ShareKnowledge::execute(GameMap* map, Markers* markers, vector<Player*> pla
 
 //Transfers the card from one players hand to another and checks player hand size
 void ShareKnowledge::transferCard(int cardToPass, Player* fromPlayer, Player* toPlayer, Deck* playerDeck) {
-	Card* card = fromPlayer->removeCard(cardToPass);
-	toPlayer->addCard(card);
-	//Check if players' hand of cards is too large
-	if (toPlayer->getNumOfCards() > MAX_HAND_SIZE) {
-		toPlayer->discardPlayerCard(playerDeck);
-	}
+	TransferCard command(fromPlayer, toPlayer, cardToPass, playerDeck);
+	command.execute();
 	cout << "You have successfully passed the card." << endl;
 }
 
@@ -671,7 +668,8 @@ bool TakeEventCard::execute(GameMap * map, Markers * markers, vector<Player*> pl
 			}
 			else {
 				//take card
-				playerList[activePlayer]->addExtraPlannerCard(playerDeck->getDiscardedCard(answer));
+				addCardToPocket command(playerList[activePlayer], playerDeck->getDiscardedCard(answer));
+				command.execute();
 				cout << "Contingency Planner took an event card, this card does not count against your hand limit." << endl;
 				return true;
 			}
@@ -706,14 +704,10 @@ bool DrawCard::execute(GameMap * map, Markers * markers, vector<Player*> playerL
 	}
 	//If a city or event card -> Add to hand
 	else {
-		playerList[activePlayer]->addCard(card);
+		AddCardToHand command(playerList[activePlayer], card, playerDeck);
+		command.execute();
 		cout << "The card has been added to player " << activePlayer + 1 << "'s hand" << endl;
 		cout << "\t- " << card->print() << endl;
-
-		//Check if players' hand of cards is too large
-		if (playerList[activePlayer]->getNumOfCards() > MAX_HAND_SIZE) {
-			playerList[activePlayer]->discardPlayerCard(playerDeck);
-		}
 	}
 	return true;
 }
@@ -721,7 +715,7 @@ bool DrawCard::execute(GameMap * map, Markers * markers, vector<Player*> playerL
 //called when player draws an epidemic card
 void DrawCard::epidemicCardActions(GameMap* map, Markers* markers, vector<Player*> playerList, Deck* infectionDeck)
 {
-	cout << "\n---------An Epidemic Card has been Pulled!!!-----------" << endl << endl;
+	cout << "\n=========== An Epidemic Card has been Pulled ===========" << endl << endl;
 	//Increase infection Rate
 	markers->increaseInfectRate();
 	cout << "Infection Rate has increased to " << markers->getInfectionRate() << endl;
@@ -772,7 +766,7 @@ bool DoEventCards::execute(GameMap* map, Markers* markers, vector<Player*> playe
 
 	int choice = 0; // Input choice
 
-					// Validate input
+	// Validate input
 	if (getIntInput(choice, 0, playerList[playerID - 1]->getNumOfCards())) {
 		cout << "Your choice was option #" << choice << endl;
 
@@ -787,22 +781,23 @@ bool DoEventCards::execute(GameMap* map, Markers* markers, vector<Player*> playe
 
 			//Asks which player to move the pawn to
 			cout << "To which city would you like to move player " << playerOfPawn + 1 << "'s pawn?\nEnter the associated number." << endl;
-			for (unsigned int i = 0; i < map->getCityList()->size(); i++) {
-				cout << i << ") " << map->getCityList()->at(i)->getName() << endl;
-			}
+			map->showAllCityOptions();
 
 			int citychoice = 0;
 			if (getIntInput(citychoice, 0, 47)) {
 				// Move pawn to a proper city number
 				// Now citychoice holds the node number to move to
-				cout << "Moving the pawn..." << endl;
-				playerList[playerOfPawn]->setPawn(map->getCityList()->at(citychoice));
-				cout << "Pawn moved successfully." << endl;
+				if (playerOfPawn == playerID - 1) {
+					DiscardCardAndMove command(playerList[playerOfPawn], map->getCityList()->at(citychoice), choice, playerDeck);
+					command.execute();
+				}
+				else {
+					MovePawn command1(playerList[playerOfPawn], map->getCityList()->at(citychoice));
+					command1.execute();
+					DiscardCard command2(playerList[playerID - 1], &choice, 1, playerDeck);
+					command2.execute();
+				}
 				cout << "Player " << playerOfPawn + 1 << " is now in " << playerList[playerOfPawn]->getPawn()->getName() << endl << endl;
-
-				// Remove the card
-				playerDeck->discard(playerList[playerID - 1]->removeCard(choice));
-
 				return true;
 			}
 		} // END AIRLIFT
@@ -813,7 +808,8 @@ bool DoEventCards::execute(GameMap* map, Markers* markers, vector<Player*> playe
 			quietNightPlayed = true;
 			cout << "A quiet night is near!" << endl;
 			// Discard the card
-			playerDeck->discard(playerList[playerID - 1]->removeCard(choice));
+			DiscardCard command(playerList[playerID - 1], &choice, 1, playerDeck);
+			command.execute();
 			return true;
 		} // END ONE QUIET NIGHT
 
@@ -823,23 +819,28 @@ bool DoEventCards::execute(GameMap* map, Markers* markers, vector<Player*> playe
 			cout << "Here are the top 6 cards of the Infection Deck:\n" << endl;
 
 			// To store to re-arrange later
-			Card* infectCards[6];
+			Card* infectCards[NUM_OF_CARDS_FOR_FORCAST];
 
 			// Get the top 6 (back in deque) cards
-			for (unsigned int i = 0; i < 6; i++) {
+			for (unsigned int i = 0; i < NUM_OF_CARDS_FOR_FORCAST; i++) {
 				cout << i << ") " << infectionDeck->getDrawPile().back()->print() << endl;
 				infectCards[i] = infectionDeck->getDrawPile().back();
 				infectionDeck->getDrawPile().pop_back();
 			}
 
 			// Prompt for player input for order
-			cout << "Please enter a sequence of numbers (as listed above) separated by a space for the order you wish to arrange them in." << endl;
-			cout << "(Example: 5 0 4 2 3 1)" << endl;
+			cout << "Please enter the cards in the order you wish to replace them. The last selection will be on the top"<< endl;
+			int order[6];
+			for (int i = 0; i < NUM_OF_CARDS_FOR_FORCAST; i++) {
 
-			int order[6]; // To order the cards
+				// Input Tick for visual purposes 
+				cout << "> ";
 
-						  // Read the ordering into the array
-			cin >> order[0] >> order[1] >> order[2] >> order[3] >> order[4] >> order[5];
+				//Checks for valid input
+				if (!getIntInput(order[i], 0, NUM_OF_CARDS_FOR_FORCAST)) {
+					return false;
+				}
+			}
 
 			// Arrange the deck in chosen order, and output as we go to let player know
 			cout << "New top 6 cards are:\n" << endl;
@@ -857,7 +858,8 @@ bool DoEventCards::execute(GameMap* map, Markers* markers, vector<Player*> playe
 			cout << "5) " << infectionDeck->getDrawPile().back()->print() << endl;
 
 			// Remove the card
-			playerDeck->discard(playerList[playerID - 1]->removeCard(choice));
+			DiscardCard command(playerList[playerID - 1], &choice, 1, playerDeck);
+			command.execute(); 
 			return true;
 		} // END FORECAST
 
@@ -879,17 +881,19 @@ bool DoEventCards::execute(GameMap* map, Markers* markers, vector<Player*> playe
 				}
 				if (markers->useResearchStation()) {
 					city->addResearchStation();
+					// Remove the card (discard it)
+					DiscardCard command(playerList[playerID - 1], &choice, 1, playerDeck);
+					command.execute();
 					cout << "Research Station Added! ";
 					return true;
-					// Remove the card (discard it)
-					playerDeck->discard(playerList[playerID - 1]->removeCard(choice));
-					return true;
 				}
-				else
+				else {
 					cout << "No more Research Stations to be built." << endl;
+					cout << "This card has no purpose, it has be discarded." << endl;
+					DiscardCard command(playerList[playerID - 1], &choice, 1, playerDeck);
+					command.execute();
+				}
 			}
-			// Remove the card in the else case, will not reach if we returned true before
-			playerDeck->discard(playerList[playerID - 1]->removeCard(choice));
 		} // END GOVERNMENT
 
 		  // CASE: RESILIENT POPULATION
@@ -912,9 +916,10 @@ bool DoEventCards::execute(GameMap* map, Markers* markers, vector<Player*> playe
 			for (unsigned int i = 0; i < infectionDeck->getDiscardPile().size(); i++) {
 				cout << i << ") " << infectionDeck->getDiscardPile().at(i)->print() << endl;
 			}
-
 			// Discard the event card
-			playerDeck->discard(playerList[playerID - 1]->removeCard(choice));
+			DiscardCard command(playerList[playerID - 1], &choice, 1, playerDeck);
+			command.execute();
+			cout << "Your event card has been discarded" << endl;
 			return true;
 		} // END RESILIENT POPULATION
 		else {

@@ -19,6 +19,7 @@ bool Markers::useResearchStation()
 {
 	if (this->researchStations > 0) {
 		this->researchStations--;
+		Notify("Research Station Used");
 		return true;
 	}
 	return false;
@@ -28,7 +29,26 @@ bool Markers::useDiseaseCube(InfectType color)
 {
 	if (this->diseaseCubes[color] > 0) {
 		this->diseaseCubes[color]--;
+		Notify("Disease Cube Used");
 		return true;
 	}
 	return false;
+}
+
+// OBSERVER PATTERN: Add Disease Cube
+void Markers::addDiseaseCube(InfectType color) {
+	diseaseCubes[color]++;
+	Notify("Disease Cube moved back into cube bank! ");
+}
+
+// OBSERVER PATTERN: Increase Outbreak Count
+void Markers::increaseOutbreakCounter() {
+	this->outbreakCounter++;
+	Notify("Outbreak has been increased! ");
+}
+
+// OBSERVER PATTERN: Increas Infection Rate
+void Markers::increaseInfectRate() {
+	this->infectionRatePosition++;
+	Notify("Infection Rate has been increased! ");
 }

@@ -99,6 +99,9 @@
     <ClInclude Include="InputOutput.h">
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Header Files\Patterns</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonLibrary.cpp">
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="InputOutput.cpp">
       <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Source Files\Patterns</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

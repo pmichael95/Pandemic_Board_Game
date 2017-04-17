@@ -4,7 +4,7 @@
 //----CONSTRUCTOR / DECONSTRUCTOR-----
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-GameController::GameController() : activePlayer(0) {
+GameController::GameController() : activePlayer(0), eventCardInPlay(false){
 }
 
 GameController::~GameController() {
@@ -59,13 +59,17 @@ void GameController::initializeNewGame()
 void GameController::initializePlayers() 
 {
 	cout << "\nHow many players? (2, 3 or 4?)" << endl;
+
+	// Input Tick for visual purposes 
+	cout << "> ";
+
 	while (!getIntInput(numOfPlayers, 2, 4)) {}
 
 	Deck* roleDeck = new Deck(ROLE_CARD_INITIAL_FILE);
 	//Deck* roleDeck = DeckFactory::Create(ROLE_CARD_INITIAL_FILE);
 	for (int i = 0; i < numOfPlayers; i++) {
 		players.push_back(new Player(i, new ReferenceCard()));
-		players[i]->setPawn(map->getHead());
+		players[i]->movePawn(map->getHead());
 		players[i]->setRole(dynamic_cast<RoleCard*>(roleDeck->drawFromTop()));
 		
 		//Deal starting cards.
@@ -85,6 +89,10 @@ void GameController::addEpidemicCards()
 	cout << "1) Introductory" << endl;
 	cout << "2) Standard" << endl;
 	cout << "3) Heroic" << endl;
+
+	// Input Tick for visual purposes 
+	cout << "> ";
+
 	//Handle input
 	while(!getIntInput(selection, 1, 3)){}
 	playerDeck->insertEpidemicCards(NUM_OF_EPIDEMIC_CARDS + selection);
@@ -109,7 +117,7 @@ void GameController::initialInfection()
 void GameController::initializeObservers() 
 {
 	//new MapView
-	mapDisplay = new MapView(&markers, map);
+	mapDisplay = new MapView(&markers, map, players);
 
 	//new PlayerView
 	playerDisplay = new PlayerView(&players);
@@ -117,7 +125,22 @@ void GameController::initializeObservers()
 	for (auto const &player : players) {
 		medicObserver = new MedicObserver(player, map, &markers);
 	}
+
+	checkifEventCardinPlay();
 }
+
+//Check if any Player has an event card; toggles event card play on and off
+void GameController::checkifEventCardinPlay()
+{
+	eventCardInPlay = false;
+	for (int i = 0; i < players.size(); i++) {
+		if (players[i]->checkifPlayerHasEventCard()) {
+			eventCardInPlay = true;
+		}
+	}
+}
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // -----SAVE/LOAD--------
@@ -143,7 +166,7 @@ void GameController::saveGame()
 	// Create and input archive
 	std::ofstream ofs(SAVED_MAP_FILE);
 	boost::archive::text_oarchive ar(ofs);
-	ar & markers & map & infectionDeck &playerDeck & players;
+	ar & markers & map & infectionDeck & playerDeck & players;
 	ofs.close();
 }
 
@@ -170,11 +193,11 @@ void GameController::startRound()
 	// Updates the map and display all models
 	// mapDisplay->updateMap(map->getCityList());
 	// mapDisplay->printMap();	// Display Map Views
-	mapDisplay->Update();	// Display Map Views
+	mapDisplay->Update("print");	// Display Map Views
 
 	for (int i = 0; i < players.size(); i++) {
 		playerDisplay->setActivePlayer(i);
-		playerDisplay->Update();
+		playerDisplay->Update("print");
 	}
 }
 
@@ -190,6 +213,7 @@ void GameController::switchPlayers()
 void GameController::phase1_Actions()
 {
 	// Set the PlayerView to the current active player
+	mapDisplay->setActivePlayer(activePlayer);
 	playerDisplay->setActivePlayer(activePlayer);
 
 	int i = 0;
@@ -201,15 +225,15 @@ void GameController::phase1_Actions()
 		//==================== DISPLAY VIEW ====================
 
 		// Display Map Views
-		mapDisplay->Update();	
+		mapDisplay->Update("print");	
 
 		// Display player view
-		playerDisplay->Update();
+		playerDisplay->Update("print");
 
 
-		cout << "=============================================================" << endl;
+		/*cout << "=============================================================" << endl;
 		cout << "------------------------Phase 1------------------------------" << endl;
-		cout << "=============================================================" << endl << endl;
+		cout << "=============================================================" << endl << endl;*/
 
 		ActionContext action;
 
@@ -292,12 +316,17 @@ void GameController::phase1_Actions()
 			i++;
 		}
 		
-		int playerID = 0;
-		// Prompt for event cards
-		if (promptEvent(playerID, numOfPlayers)) {
-			ActionContext action(new DoEventCards());
-			action.execute(map, &markers, players, playerDeck, infectionDeck, playerID, quietNightPlayed);
+		//If any player has an event card then prompt
+		if (eventCardInPlay) {
+			int playerID = 0;
+			// Prompt for event cards
+			if (promptEvent(playerID, numOfPlayers)) {
+				ActionContext action(new DoEventCards());
+				action.execute(map, &markers, players, playerDeck, infectionDeck, playerID, quietNightPlayed);
+			}
 		}
+
+		checkifEventCardinPlay();
 
 		//Check if win conditions have been met
 		if (markers.getCureMarker(yellow) == cured && markers.getCureMarker(red) == cured && markers.getCureMarker(blue) == cured && markers.getCureMarker(black) == cured) {
@@ -333,18 +362,24 @@ void GameController::phase2_DrawCards()
 		//Draw two cards
 		ActionContext action(new DrawCard());
 		for (int i = 0; i < NUM_OF_PLAYER_CARDS_DRAWN_PER_TURN; i++) {
-			//play event card option
 			action.execute(map, &markers, players, playerDeck, infectionDeck, activePlayer, quietNightPlayed);
+			if (players[activePlayer]->checkifPlayerHasEventCard()) {
+				eventCardInPlay = true;
+			}
 		}
 	}
 
-	int playerID = 0;
-	// Prompt for event cards
-	if (promptEvent(playerID, numOfPlayers)) {
-		ActionContext action(new DoEventCards());
-		action.execute(map, &markers, players, playerDeck, infectionDeck, playerID, quietNightPlayed);
+	//If any player has an event card, then prompt
+	if (eventCardInPlay) {
+		int playerID = 0;
+		// Prompt for event cards
+		if (promptEvent(playerID, numOfPlayers)) {
+			ActionContext action(new DoEventCards());
+			action.execute(map, &markers, players, playerDeck, infectionDeck, playerID, quietNightPlayed);
+			checkifEventCardinPlay();
+		}
 	}
-	// Pause...
+
 	pause();
 }
 
@@ -360,10 +395,10 @@ void GameController::phase3_Infects()
 	cout << "=============================================================" << endl;
 	cout << "------------------------Phase 3------------------------------" << endl;
 	cout << "=============================================================" << endl << endl;
-	cout << "Player " << activePlayer + 1 << " draws " << markers.getInfectionRate() << " infection cards." << endl << endl;
 	
 	if (!quietNightPlayed) {
 		//Draw Cards and infect cities
+		cout << "Player " << activePlayer + 1 << " draws " << markers.getInfectionRate() << " infection cards." << endl << endl;
 		ActionContext action(new Infect());
 		for (int i = 0; i < markers.getInfectionRate(); i++) {
 			action.execute(map, &markers, players, playerDeck, infectionDeck, activePlayer, quietNightPlayed);

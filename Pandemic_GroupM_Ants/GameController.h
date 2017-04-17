@@ -15,6 +15,7 @@ class GameController
 {
 	int activePlayer;
 	int numOfPlayers;
+	bool eventCardInPlay;
 
 	//Game Models
 	Markers markers;
@@ -52,6 +53,8 @@ private:
 	void addEpidemicCards();
 	void initialInfection();
 	void initializeObservers();
+	
+	void checkifEventCardinPlay();
 	
 	void switchPlayers();
 

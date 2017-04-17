@@ -33,25 +33,10 @@ public:
 	int getNumOfDiseaseCubes(InfectType color) { return this->diseaseCubes[color]; }
 	bool useDiseaseCube(InfectType color);
 	
-	// OBSERVER PATTERN: Add Disease Cube
-	void addDiseaseCube(InfectType color) {
-		diseaseCubes[color]++;
-		Notify();
-	}
-	
-	// OBSERVER PATTERN: Increase Outbreak Count
-	void increaseOutbreakCounter() {
-		this->outbreakCounter++;
-		Notify();
-	}
-
+	void addDiseaseCube(InfectType color);
+	void increaseOutbreakCounter();
 	int getOutbreakCounter() { return this->outbreakCounter; }
-	
-	// OBSERVER PATTERN: Increas Infection Rate
-	void increaseInfectRate() {
-		this->infectionRatePosition++;
-		Notify();
-	}
+	void increaseInfectRate();
 
 	int getInfectionRate() { return INFECTION_RATE[infectionRatePosition]; }
 

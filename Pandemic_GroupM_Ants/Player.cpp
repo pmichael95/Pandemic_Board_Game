@@ -20,30 +20,59 @@ Player::~Player()
 	role = nullptr;
 }
 
-//Get and Set Functions////////////////////////////////////////////
-
-void Player::setPawn(CityNode * position)
+void Player::movePawn(CityNode * newLocation)
 {
-	this->pawn = position;
-	Notify();
+	this->pawn = newLocation;
+	Notify("Player " + to_string(id) + " moved");
 }
 
-void Player::setRole(RoleCard * role)
+Card** Player::discardCard(int* index, int size)
 {
-	this->role = role;
-	Notify();
+	Card** cards = new Card*[size];
+	int indexBase = cardsInHand.size();
+	for (int i = 0; i < size; i++) {
+		if (*index < indexBase) {
+			cards[i] = this->removeCard(*index);
+		}
+		else {
+			Card* card = useExtraPlannerCard();
+		}
+		index++;
+	}
+	Notify("Player " + to_string(id) + " discarded card");
+	return cards;
+}
+
+Card** Player::addCard(Card * card)
+{
+	this->cardsInHand.push_back(card);
+	if (cardsInHand.size() > MAX_HAND_SIZE) {
+		return tooManyCards();
+	}
+	else {
+		Notify("Player " + to_string(id) + " added card");
+		return nullptr;
+	}
+}
+
+Card** Player::moveAndDiscard(CityNode * newLocation, int index)
+{
+	this->pawn = newLocation;
+	Card* card;
+	if (index < cardsInHand.size()) {
+		card = this->removeCard(index);
+	}
+	else {
+		card = useExtraPlannerCard();
+	}
+	Notify("Player " + to_string(id) + " moved");
+	return &card;
 }
 
 void Player::addExtraPlannerCard(Card* card)
 {
 	extraPlannerCard = card;
-}
-
-Card* Player::useExtraPlannerCard()
-{
-	Card* card = extraPlannerCard;
-	extraPlannerCard = nullptr;
-	return card;
+	Notify("Player " + to_string(id) + " added card");
 }
 
 //Card Functions////////////////////////////////////////////
@@ -66,6 +95,18 @@ bool Player::checkifPlayerHasCardAtIndex(string name, int index) {
 	return *cardsInHand[index] == name;
 }
 
+bool Player::checkifPlayerHasEventCard()
+{
+	for (int i = 0; i < cardsInHand.size(); i++)
+	{
+		if (cardsInHand[i]->getType() == "Event")
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 //Prints cards in hand, and key selections to select from them.
 void Player::displayPlayerCardOptions()
 {
@@ -74,7 +115,7 @@ void Player::displayPlayerCardOptions()
 	}
 }
 
-void Player::discardPlayerCard(Deck * playerDeck)
+Card** Player::tooManyCards()
 {
 	cout << "\nPlayer " << id << " has too many cards in hand! Select one to discard:" << endl;
 	this->displayPlayerCardOptions();
@@ -87,36 +128,8 @@ void Player::discardPlayerCard(Deck * playerDeck)
 	while (!getIntInput(answer, 0, cardsInHand.size())) {}
 
 	// Discard Card
-	Card* card = this->removeCard(answer);
-	if (card->getType() == "City") {
-		delete card;
-		card = nullptr;
-	}
-	else {
-		playerDeck->discard(card);
-	}
 	cout << "Discarding Card\n" << endl;
-}
-
-void Player::addCard(Card * card)
-{
-	this->cardsInHand.push_back(card);
-	Notify();
-}
-
-// OBSERVER PATTERN: Remove Card from Hand
-Card* Player::removeCard(int index)
-{
-	if (index < cardsInHand.size() && index > -1) {
-		Card* temp = this->cardsInHand[index];
-		this->cardsInHand.erase(cardsInHand.begin() + index);
-
-		Notify(); // Overriden Notify Function
-
-		return temp;
-	}
-	else
-		return nullptr;
+	 return discardCard(&answer, 1);
 }
 
 string Player::printHand() {
@@ -135,4 +148,24 @@ const bool Player::operator==(const string name)
 	else {
 		return false;
 	}
+}
+
+//Private Functions///////////////////////////////////////////////////////
+
+Card* Player::useExtraPlannerCard()
+{
+	Card* card = extraPlannerCard;
+	extraPlannerCard = nullptr;
+	return card;
+}
+
+Card* Player::removeCard(int index)
+{
+	if (index < cardsInHand.size() && index > -1) {
+		Card* temp = this->cardsInHand[index];
+		this->cardsInHand.erase(cardsInHand.begin() + index);
+		return temp;
+	}
+	else
+		return nullptr;
 }

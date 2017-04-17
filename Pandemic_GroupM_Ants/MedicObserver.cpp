@@ -5,7 +5,7 @@ MedicObserver::MedicObserver(Player * player, GameMap * map, Markers* markers) :
 	player->Attach(this);
 }
 
-void MedicObserver::Update()
+void MedicObserver::Update(string message)
 {
 	//check if any diseases are cured
 	for (int i = 0; i < NUM_OF_DISEASES; i++) {

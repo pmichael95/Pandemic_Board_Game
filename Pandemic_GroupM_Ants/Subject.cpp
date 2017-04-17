@@ -22,9 +22,10 @@ void Subject::Detach(Observer* obv) {
 	this->obv->remove(obv);
 }
 
-// Notifying an Observer of a change
-void Subject::Notify() {
+
+// Notifying an Observer of a change with message
+void Subject::Notify(string message) {
 	list<Observer*>::iterator i = this->obv->begin();
 	for (; i != this->obv->end(); ++i)
-		(*i)->Update();
+		(*i)->Update(message);
 }

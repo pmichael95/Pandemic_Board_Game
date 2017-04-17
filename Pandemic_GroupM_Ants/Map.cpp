@@ -10,22 +10,23 @@ CityNode::CityNode(string name, InfectType area, bool researchStation) : name(na
 
 CityNode::~CityNode(){}
 
+// =============== OBSERVER PATTERN =============== 
 void CityNode::increaseInfectionLevel(InfectType infection)
 {
 	this->infectionLevel[infection]++;
-	Notify();
+	Notify("City Infection Increased! ");	// Overriden Notify Function
 }
 
 void CityNode::reduceInfectionLevel(InfectType infection)
 {
 	this->infectionLevel[infection]--;
-	Notify();
+	Notify("City Infection Decreased! ");	// Overriden Notify Function
 }
 
 void CityNode::addResearchStation()
 {
 	this->researchStation = true;
-	Notify();
+	Notify("Research Station Added! ");	// Overriden Notify Function
 }
 
 
@@ -117,9 +118,12 @@ void GameMap::showAllCityOptions()
 	{
 		string name = cityList[k]->getName();
 		cout << name << " (" << k << ")\t";
+
+		if (k % 12 == 2 && k !=  26)
+			cout << "\t";
+		
 		if (k % 12 == 11)
-		{
 			cout << endl;
-		}
+		
 	}
 }

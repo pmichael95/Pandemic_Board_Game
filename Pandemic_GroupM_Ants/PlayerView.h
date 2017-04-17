@@ -20,7 +20,7 @@ class PlayerView : public Observer {
 		~PlayerView();
 
 		// Overriden Observer Function
-		void Update();
+		void Update(string message);
 
 		// ========== Playerview Functions =============
 		void printPlayerDisplay(int index) const; // Prints the player view
