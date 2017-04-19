@@ -81,29 +81,33 @@ deque<Card*> &Deck::getDiscardPile()
 void Deck::initialize(string fileName)
 {
 	ifstream file;
-	file.open(fileName);
+	try {
+		file.open(fileName);
 
-	if (fileName == INFECTION_CARD_INITIAL_FILE)
-	{
-		cout << "Pulling the Infection Deck out of the box..." << endl;
-		populateDeck(file);
-	}
-	else if (fileName == PLAYER_CARD_INITIAL_FILE)
-	{
-		cout << "Pulling the Player Deck out of the box..." << endl;
-		populateDeck(file);
+		if (fileName == INFECTION_CARD_INITIAL_FILE)
+		{
+			cout << "Pulling the Infection Deck out of the box..." << endl;
+			populateDeck(file);
+		}
+		else if (fileName == PLAYER_CARD_INITIAL_FILE)
+		{
+			cout << "Pulling the Player Deck out of the box..." << endl;
+			populateDeck(file);
 
+		}
+		else if (fileName == ROLE_CARD_INITIAL_FILE)
+		{
+			cout << "Pulling the Role Deck out of the box..." << endl;
+			populateDeck(file);
+		}
+		else
+		{
+			cout << "Invalid FileName.";
+		}
 	}
-	else if (fileName == ROLE_CARD_INITIAL_FILE)
-	{
-		cout << "Pulling the Role Deck out of the box..." << endl;
-		populateDeck(file);
+	catch (const ifstream::failure& e) {
+		cout << "Invalid opening of card file";
 	}
-	else
-	{
-		cout << "Invalid FileName.";
-	}
-
 	file.close();
 }
 

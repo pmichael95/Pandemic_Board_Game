@@ -126,6 +126,9 @@ void GameController::initializeObservers()
 		medicObserver = new MedicObserver(player, map, &markers);
 	}
 
+	//initialize numberOfPlayers
+	numOfPlayers = players.size();
+
 	checkifEventCardinPlay();
 }
 

@@ -81,35 +81,41 @@ void GameMap::loadStartingMap(string filename)
 	int connectIndex1, connectIndex2;
 
 	ifstream file;
-	file.open(filename);
-	if (!file.good()) {
-		cout << "Invalid file location: map" << endl;
-		return;
-	}
+	try {
+		file.open(filename);
+		if (!file.good()) {
+			cout << "Invalid file location: map" << endl;
+			return;
+		}
 
-	cout << "Pulling out game board...." << endl;
-	while (!file.eof()) {
-		file >> datatype;
-		//Identifies cities and adds them to the map graph
-		if (datatype == 'C') {
-			file >> zone;
-			file.ignore(1);
-			getline(file, name);
-			city = new CityNode(name, (InfectType)zone);
-			this->cityList.push_back(city);
+		cout << "Pulling out game board...." << endl;
+		while (!file.eof()) {
+			file >> datatype;
+			//Identifies cities and adds them to the map graph
+			if (datatype == 'C') {
+				file >> zone;
+				file.ignore(1);
+				getline(file, name);
+				city = new CityNode(name, (InfectType)zone);
+				this->cityList.push_back(city);
 
-		}
-		//Identifies edges and adds them to the map graph
-		else if (datatype == 'e') {
-			file >> connectIndex1 >> connectIndex2;
-			file.ignore();
-			this->cityList[connectIndex1]->addConnection(this->cityList[connectIndex2]);
-			this->cityList[connectIndex2]->addConnection(this->cityList[connectIndex1]);
-		}
-		else {
-			getline(file, garbage);
+			}
+			//Identifies edges and adds them to the map graph
+			else if (datatype == 'e') {
+				file >> connectIndex1 >> connectIndex2;
+				file.ignore();
+				this->cityList[connectIndex1]->addConnection(this->cityList[connectIndex2]);
+				this->cityList[connectIndex2]->addConnection(this->cityList[connectIndex1]);
+			}
+			else {
+				getline(file, garbage);
+			}
 		}
 	}
+	catch (const ifstream::failure& e) {
+		cout << "Invalid opening/reading of map file";
+	}
+	file.close();
 }
 
 void GameMap::showAllCityOptions()

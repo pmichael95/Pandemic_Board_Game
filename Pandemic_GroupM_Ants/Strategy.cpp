@@ -294,7 +294,7 @@ bool DispatcherMovement::execute(GameMap* map, Markers* markers, vector<Player*>
 		cout << "To which player would you like to move player " << playerOfPawn + 1 << "'s pawn?" << endl;
 		for (int i = 0; i < playerList.size(); i++) {
 			if (i != playerOfPawn) {
-				cout << i << ") - Player " << i + 1 << endl;
+				cout << i+1 << " - Player " << i + 1 << endl;
 			}
 		}
 
@@ -347,7 +347,7 @@ bool BuildResearchStation::execute(GameMap* map, Markers* markers, vector<Player
 	else {
 		//Check if player has the card for the city they are in
 		int index;
-		if (index = playerList[activePlayer]->checkifPlayerHasCard(playerList[activePlayer]->getPawn()->getName()) != -1) {
+		if ((index = playerList[activePlayer]->checkifPlayerHasCard(playerList[activePlayer]->getPawn()->getName())) != -1) {
 			//Build a research station
 			if (markers->useResearchStation()) {
 				playerList[activePlayer]->getPawn()->addResearchStation();
@@ -409,7 +409,7 @@ bool DiscoverCure::execute(GameMap* map, Markers* markers, vector<Player*> playe
 			}
 
 			//Check if Valid Choice
-			for (int j = 0; j < numberToCure; j++) {
+			for (int j = 0; j <= i; j++) {
 				//Check that card has not already been selected
 				if (i != j && answer[i] == answer[j]) {
 					cout << "That card has already been selected, you need to start over." << endl;
@@ -584,7 +584,8 @@ bool ShareKnowledge::execute(GameMap* map, Markers* markers, vector<Player*> pla
 	else {
 
 		// Searches active players hand for City cards that match location
-		if (int i = playerList[activePlayer]->checkifPlayerHasCard(playerList[activePlayer]->getPawn()->getName()) != -1) {
+		int i;
+		if ((i = playerList[activePlayer]->checkifPlayerHasCard(playerList[activePlayer]->getPawn()->getName())) != -1) {
 			cout << "You have the card for this city, you may pass it." << endl;
 			//If approved Transfer card
 			if (getAnotherPlayersApproval(otherPlayer + 1)) {
@@ -593,7 +594,7 @@ bool ShareKnowledge::execute(GameMap* map, Markers* markers, vector<Player*> pla
 			}
 		}
 		//Searches other players hand for City cards that match location
-		else if (int i = playerList[otherPlayer]->checkifPlayerHasCard(playerList[activePlayer]->getPawn()->getName()) != -1) {
+		else if ((i = playerList[otherPlayer]->checkifPlayerHasCard(playerList[activePlayer]->getPawn()->getName())) != -1) {
 			cout << "The other player has the card for this city, they may pass it." << endl;
 			//If approved Transfer card
 			if (getAnotherPlayersApproval(otherPlayer + 1)) {
@@ -704,10 +705,10 @@ bool DrawCard::execute(GameMap * map, Markers * markers, vector<Player*> playerL
 	}
 	//If a city or event card -> Add to hand
 	else {
-		AddCardToHand command(playerList[activePlayer], card, playerDeck);
-		command.execute();
 		cout << "The card has been added to player " << activePlayer + 1 << "'s hand" << endl;
 		cout << "\t- " << card->print() << endl;
+		AddCardToHand command(playerList[activePlayer], card, playerDeck);
+		command.execute();
 	}
 	return true;
 }
@@ -907,20 +908,23 @@ bool DoEventCards::execute(GameMap* map, Markers* markers, vector<Player*> playe
 			cout << "\nPlease enter the number associated to the card you wish to remove from the game." << endl;
 			// Read and validate input for the card choice to remove
 			int card_choice = 0;
-			if (getIntInput(card_choice, 0, infectionDeck->getDiscardPile().size())) {
+			if (!getIntInput(card_choice, 0, infectionDeck->getDiscardPile().size())) {
+				return false;
+			}
+			else {
 				// Remove the card from the game
 				infectionDeck->getDiscardPile().erase(infectionDeck->getDiscardPile().begin() + card_choice);
+				cout << "\nInfection Discard Pile is now made up of:\n" << endl;
+				// Print out infection discard pile again to validate
+				for (unsigned int i = 0; i < infectionDeck->getDiscardPile().size(); i++) {
+					cout << i << ") " << infectionDeck->getDiscardPile().at(i)->print() << endl;
+				}
+				// Discard the event card
+				DiscardCard command(playerList[playerID - 1], &choice, 1, playerDeck);
+				command.execute();
+				cout << "Your event card has been discarded" << endl;
+				return true;
 			}
-			cout << "\nInfection Discard Pile is now made up of:\n" << endl;
-			// Print out infection discard pile again to validate
-			for (unsigned int i = 0; i < infectionDeck->getDiscardPile().size(); i++) {
-				cout << i << ") " << infectionDeck->getDiscardPile().at(i)->print() << endl;
-			}
-			// Discard the event card
-			DiscardCard command(playerList[playerID - 1], &choice, 1, playerDeck);
-			command.execute();
-			cout << "Your event card has been discarded" << endl;
-			return true;
 		} // END RESILIENT POPULATION
 		else {
 			cout << "Your selection was not a valid Event Card." << endl;

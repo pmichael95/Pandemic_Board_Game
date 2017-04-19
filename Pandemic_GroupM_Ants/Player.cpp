@@ -117,7 +117,7 @@ void Player::displayPlayerCardOptions()
 
 Card** Player::tooManyCards()
 {
-	cout << "\nPlayer " << id << " has too many cards in hand! Select one to discard:" << endl;
+	cout << "\nPlayer " << id+1 << " has too many cards in hand! Select one to discard:" << endl;
 	this->displayPlayerCardOptions();
 	int answer;
 
